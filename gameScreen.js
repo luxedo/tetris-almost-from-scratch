@@ -21,30 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // main game screen
 gameScreen.init = () => {
-    Game.ctx.font = "45px VT323";
-    Game.ctx.fillStyle = "#0F0";
-    Game.ctx.lineWidth = 0.1;
+  Game.ctx.font = "30px VT323";
+  Game.ctx.fillStyle = "#0F0";
+  Game.ctx.lineWidth = 0.1;
+  gameScreen.cursor = true;
+  gameScreen.userInput = "";
+  gameScreen.text = [];
+  gameScreen.text.push(...gameText.intro);
+  gameScreen.text.push(...gameText.report);
+  gameScreen.text.push(...gameText.buyAcres);
+  setInterval(() => gameScreen.cursor=!gameScreen.cursor, 500);
 }
 
 gameScreen.draw = () => {
-    Game.ctx.clearRect(0, 0, Game.width, Game.height)
-    blipScreen(
-`HAMURABI ALMOST FROM SCRATCH
-Hello World!
-abcdefghijklmnopqrstuvyxwz
-ABCDEFGHIJKLMNOPQRSTUVYXWZ
-1234567890!@#$%¨&*()<>[]{}^~_+,.;/?:º"'
-carryovertest carryovertest carryovertest carryovertest
-line
-line
-line
-line
-line
-line
-line
-line
-Hello World Again!
-`);
+  Game.ctx.clearRect(0, 0, Game.width, Game.height)
+  let showText = makeText(gameScreen.text, gameScreen.userInput);
+  blitScreen(showText, gameScreen.cursor);
 }
 
 gameScreen.update = () => {

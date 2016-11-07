@@ -19,29 +19,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 "use strict";
 
-// keyboard handler
-// let Key = {
-//   _pressed: {},
-//   _single: {},
-//   isDown: function(keyCode) {return this._pressed[keyCode]},
-//   onKeydown: function(event) {this._pressed[event.keyCode] = true},
-//   onKeyup: function(event) {delete this._pressed[event.keyCode]},
-// };
-// window.addEventListener('keyup', (event) => { Key.onKeyup(event) }, false);
-// window.addEventListener("keydown", (event) => {
-//   Key.onKeydown(event);
-//   if([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1) {event.preventDefault()}
-// }, false);
+// preventDefault
+window.addEventListener("keydown", function (event) {
+  if ([32, 37, 38, 39, 40, 13].indexOf(event.keyCode) > -1) {
+    event.preventDefault();
+  }
+}, false);
 
 // Game object
 let Game = {
   fps: 60,
   width: 800,
-  height: 600
+  height: 600,
+  year: 1,
+  starved: 0,
+  came: 5,
+  population: 100,
+  acres: 1000,
+  planted: 1000,
+  harvest: 3,
+  rats: 200,
+  store: 2800,
+  trade: 26
 };
 
-// Game states
+// Game state/ keyboard handler
 let gameScreen = {}
+gameScreen.keyListener = window.addEventListener("keydown", function (event) {
+  for (var i = 48; i <= 90; i++) {
+    if (event.which === i) {
+      gameScreen.userInput += String.fromCharCode(i);
+    }
+  }
+});
 
 // sound factory
 // function soundFactory(audio, start, stop) {

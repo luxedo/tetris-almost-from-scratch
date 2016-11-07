@@ -4,7 +4,7 @@ This is an attempt of making the game [Hamurabi](https://en.wikipedia.org/wiki/H
 Hamurabi is one of the first electronic games, arguably the first strategy game.
 The game is set in Babylon, where the player is the ancient king [Hamurabi](https://en.wikipedia.org/wiki/Hammurabi) and must control the resources to feed the people and purchase land for a period of ten game rounds.
 
-The game is based in html5/canvas, CSS and ES6 javascript. Since every retro game I make, I change a few things, this time I'm drawing some icons to indicate the resources of the game.
+The game is based in html5/canvas, CSS and ES6 javascript.
 
 #### Check it out [here](https://armlessjohn404.github.io/hamurabi-almost-from-scratch/)
 
@@ -13,8 +13,6 @@ The game is based in html5/canvas, CSS and ES6 javascript. Since every retro gam
 * ~~Host somewhere~~
 * ~~Copy [PONG](https://armlessjohn404.github.io/pong-almost-from-scratch/) project base~~
 * ~~Create drawing/writting functions~~
-* Design board
-* Create resources icons
 * Research and add all the text of the game
 * Create the user input mechanics
 * Create the end round logic
@@ -36,5 +34,5 @@ I'm not really in the mood of remakinkg the old terminal fonts by hands drawing 
 
 ![VT320](report-assets/DEC-VT320-0a.jpg "VT320")
 
-The text drawing function gets a text as input and prints it on screen. If the text is larger than `40` characters, the functions splits it into more lines. So far, the game looks like this:
+The text drawing function gets a text as input and prints it on screen. If the text is larger than `61` characters, the functions splits it into more lines. So far, the game looks like this:
 ![hello world](report-assets/hello-world.png "hello world")
