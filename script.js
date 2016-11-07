@@ -1,6 +1,6 @@
 /*
-pong-almost-from-scratch
-This is an attempt of making the game pong using modern programming languages
+hamurabi-almost-from-scratch
+This is an attempt of making the game hamurabi using modern programming languages
 
 Copyright (C) 2016  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
 
@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 "use strict"
+const VERSION = "no version yet";
 
 function startGame() {
   Game.start();
