@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 html, body {
-  background-color: #000;
+  background-color: #222;
   color: #FFF;
   font-family: monospace;
   text-align: center;
@@ -28,12 +28,15 @@ html, body {
 }
 
 #game {
-  margin-top: 10%;
+  margin-top: 5%;
   max-height: 80%;
   max-width: 80%;
-  border-color: #FFF;
+  border-color: #B5B58D;
+  background-color: #111;
   border-style: solid;
-  border-width: thick;
+  border-width: 3em;
+  border-radius: 1em;
+  box-shadow: 0 0 20px #B5B58D;
 }
 
 #game-frame {

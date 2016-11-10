@@ -13,15 +13,12 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 * ~~Host somewhere~~
 * ~~Copy [PONG](https://armlessjohn404.github.io/pong-almost-from-scratch/) project base~~
 * ~~Create drawing/writting functions~~
-* Research and add all the text of the game
-* Create the user input mechanics
-* Create the end round logic
-* Create game over conditions
-* Improve webpage
-* Add sounds
-* Finished!
-
-All that while reporting
+* ~~Research and add all the text of the game~~
+* ~~Create the user input mechanics~~
+* ~~Create the end round logic~~
+* ~~Create game over conditions~~
+* ~~Improve webpage~~
+* ~~Finished!~~
 
 ## Progress reports
 00:00 - START! This project has really started at November 6th, 2016 at 21:30 (BRT). I'm timing each step and will be placing the timestamp along with the achieved goal.
@@ -36,3 +33,22 @@ I'm not really in the mood of remakinkg the old terminal fonts by hands drawing 
 
 The text drawing function gets a text as input and prints it on screen. If the text is larger than `61` characters, the functions splits it into more lines. So far, the game looks like this:
 ![hello world](report-assets/hello-world.png "hello world")
+
+## 08:00 - All the rest
+Since there was not much action in this game, I've spent this time
+just grinding with code, messing with strings and creating decision trees.
+Not much fun, but it's done (for now).
+
+I think that the most interesting part was to do some archaeology and read the original source code in BASIC. There I found some constants and text that would be harder to find just by playing the game. So thanks to http://atariarchives.org/.
+
+![source](http://atariarchives.org/basicgames/pages/page79.gif "source codez")
+
+I also read an [assignment](https://www.cis.upenn.edu/~matuszek/cit591-2010/Assignments/06-hammurabi.html) for the CIT 591 class of the [University of Pensylvania](http://www.upenn.edu/). It was some useful info too.
+
+The game ended up like this:
+![final](report-assets/final.jpg "final")
+
+As far as I tested there were no bugs, but only throwing it into the wild we'll find tem. So I'll be patching once if there's enough feedback.
+
+That's it for now.
+#### Bye

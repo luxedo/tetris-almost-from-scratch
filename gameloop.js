@@ -30,26 +30,20 @@ window.addEventListener("keydown", function (event) {
 let Game = {
   fps: 60,
   width: 800,
-  height: 600,
-  year: 1,
-  starved: 0,
-  came: 5,
-  population: 100,
-  acres: 1000,
-  planted: 1000,
-  harvest: 3,
-  rats: 200,
-  store: 2800,
-  trade: 26
+  height: 600
 };
 
 // Game state/ keyboard handler
+const SUPPORTED_CHARS = ` '"1!2@3#4$5%67&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP´\`[]{}~^çÇlLkKjJhHgGfFdDsSaA\\|zZxXcCvVbBnNmM,<.>;:/?`
 let gameScreen = {}
-gameScreen.keyListener = window.addEventListener("keydown", function (event) {
-  for (var i = 48; i <= 90; i++) {
-    if (event.which === i) {
-      gameScreen.userInput += String.fromCharCode(i);
-    }
+gameScreen.keyListener = window.addEventListener("keydown", (event) => {
+  if (SUPPORTED_CHARS.indexOf(event.key) != -1) {
+    gameScreen.userInput += event.key;
+  }
+  if (event.key == "Backspace") {
+    gameScreen.userInput = gameScreen.userInput.slice(0, gameScreen.userInput.length-1);
+  } else if (event.key == "Enter") {
+    gameScreen.apply();
   }
 });
 
