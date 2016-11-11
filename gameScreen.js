@@ -28,7 +28,8 @@ gameScreen.init = () => {
   Game.ctx.shadowOffsetX = 0;
   Game.ctx.shadowOffsetY = 0;
   Game.ctx.shadowBlur = 30;
-  gameScreen.resetGame(gameText.intro.concat(gameText.help));
+  gameScreen.resetGame();
+  gameScreen.pushLine(gameText.intro.concat(gameText.help), 1000);
   Game.state = "over";
   gameScreen.cursor = true
   setInterval(() => gameScreen.cursor=!gameScreen.cursor, 200);
@@ -46,99 +47,85 @@ gameScreen.update = () => {
 gameScreen.apply = () => {
   let number = gameScreen.getIntegerInput();
   reassignText();
-
+  if (Game.state === "over") {
+    gameScreen.resetGame();
+    gameScreen.pushLine(gameText.intro
+      .concat(gameText.reset)
+      .concat(gameText.report)
+      .concat(gameText.buyAcres), 1000);
+    return
+  }
+  if (isNaN(number) || number < 0) {
+    gameScreen.pushLine(gameText.cantDo);
+    Game.state = "over";
+    return
+  }
   switch (Game.state) {
     case "buy":
-      if (!isNaN(number) || number < 0) {
-        if (number*Game.trade > Game.bushels) {
-          gameScreen.pushLine(gameText.cantBuy.concat(gameText.buyAcres), 100);
-        } else if (number === 0) {
-          gameScreen.saveLastLine();
-          gameScreen.pushLine(gameText.sellAcres, 100);
-          Game.state = "sell";
-        } else {
-          gameScreen.saveLastLine();
-          gameScreen.pushLine(gameText.feed, 100);
-          Game.acres += number;
-          Game.bushels -= Game.trade*number;
-          Game.state = "feed";
-        }
+      if (number*Game.trade > Game.bushels) {
+        gameScreen.pushLine(gameText.cantBuy.concat(gameText.buyAcres), 100);
+      } else if (number === 0) {
+        gameScreen.saveLastLine();
+        gameScreen.pushLine(gameText.sellAcres, 100);
+        Game.state = "sell";
       } else {
-        gameScreen.pushLine(gameText.cantDo);
-        Game.state = "over";
+        gameScreen.saveLastLine();
+        gameScreen.pushLine(gameText.feed, 100);
+        Game.acres += number;
+        Game.bushels -= Game.trade*number;
+        Game.state = "feed";
       }
       gameScreen.userInput = "";
       break;
 
     case "sell":
-      if (!isNaN(number) || number < 0) {
-        if (number > Game.acres) {
-          gameScreen.pushLine(gameText.cantSell
-            .concat(gameText.sellAcres))
-        } else {
-          gameScreen.saveLastLine();
-          gameScreen.pushLine([``].concat(gameText.feed), 100)
-          Game.acres -= number;
-          Game.bushels += Game.trade*number;
-          Game.state = "feed";
-        }
+      if (number > Game.acres) {
+        gameScreen.pushLine(gameText.cantSell
+          .concat(gameText.sellAcres))
       } else {
-        gameScreen.pushLine(gameText.cantDo, 100);
-        Game.state = "over";
+        gameScreen.saveLastLine();
+        gameScreen.pushLine([``].concat(gameText.feed), 100)
+        Game.acres -= number;
+        Game.bushels += Game.trade*number;
+        Game.state = "feed";
       }
       gameScreen.userInput = "";
       break;
 
     case "feed":
-      if (!isNaN(number) || number < 0) {
-        if (number > Game.bushels) {
-          gameScreen.pushLine(gameText.cantBuy
-            .concat(gameText.feed), 100)
-        } else {
-          gameScreen.saveLastLine();
-          gameScreen.pushLine(gameText.plant, 100)
-          Game.bushels -= number;
-          Game.feed = number;
-          Game.state = "plant";
-        }
+      if (number > Game.bushels) {
+        gameScreen.pushLine(gameText.cantBuy
+          .concat(gameText.feed), 100)
       } else {
-        gameScreen.pushLine(gameText.cantDo, 100);
-        Game.state = "over";
+        gameScreen.saveLastLine();
+        gameScreen.pushLine(gameText.plant, 100)
+        Game.bushels -= number;
+        Game.feed = number;
+        Game.state = "plant";
       }
       gameScreen.userInput = "";
       break;
 
     case "plant":
-      if (!isNaN(number) || number < 0) {
-        if (number > Game.population*10) {
-          gameScreen.pushLine(gameText.cantPlant
-            .concat(gameText.plant), 100);
-        } else if (2*number > Game.bushels) {
-          gameScreen.pushLine(gameText.cantBuy
-            .concat(gameText.plant), 100);
-        } else if (number > Game.acres) {
-          gameScreen.pushLine(gameText.cantSell
-            .concat(gameText.plant), 100);
-        } else {
-          gameScreen.saveLastLine();
-          gameScreen.pushLine([``], 100);
-          Game.planted = number;
-          Game.bushels -= 2*number;
-          Game.state = "buy";
-          gameScreen.endTurn();
-        }
+      if (number > Game.population*10) {
+        gameScreen.pushLine(gameText.cantPlant
+          .concat(gameText.plant), 100);
+      } else if (2*number > Game.bushels) {
+        gameScreen.pushLine(gameText.cantBuy
+          .concat(gameText.plant), 100);
+      } else if (number > Game.acres) {
+        gameScreen.pushLine(gameText.cantSell
+          .concat(gameText.plant), 100);
       } else {
-        gameScreen.pushLine(gameText.cantDo, 100);
-        Game.state = "over";
+        gameScreen.saveLastLine();
+        gameScreen.pushLine([``], 100);
+        Game.planted = number;
+        Game.bushels -= 2*number;
+        Game.state = "buy";
+        gameScreen.endTurn();
       }
       gameScreen.userInput = "";
       break
-    case "over":
-      gameScreen.resetGame(gameText.intro
-        .concat(gameText.reset)
-        .concat(gameText.report)
-        .concat(gameText.buyAcres));
-      break;
   }
 }
 
@@ -166,14 +153,15 @@ gameScreen.endTurn = () => {
   Game.trade = gameScreen.randInt(17, 26);
   Game.came = gameScreen.randInt(1, 5);
   Game.harvest = gameScreen.randInt(1, 10);
-  Game.starved = (Game.population*20 - Game.feed)/20;
+  Game.starved = ((Game.population*20 - Game.feed)/20 < 0?0:(Game.population*20 - Game.feed)/20);
   Game.rats = (Math.random()<0.1?gameScreen.randInt(0, 4)*50:0);
   Game.totalPop += Game.came;
   let plague = Math.random()<0.15;
 
   // update
   if (plague) {
-      Game.population /= 2;
+      Game.population = Math.round(Game.population/2);
+      Game.totalPop -= Game.population
       Game.population += Game.came;
       gameScreen.pushLine(gameText.plague, 0);
     } else {
@@ -221,7 +209,7 @@ gameScreen.randInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-gameScreen.resetGame = (text) => {
+gameScreen.resetGame = () => {
   Game.year = 1;
   Game.starved = 0;
   Game.came = 5;
@@ -238,7 +226,6 @@ gameScreen.resetGame = (text) => {
   reassignText();
   gameScreen.userInput = "";
   gameScreen.text = [``];
-  gameScreen.pushLine(text, 1000);
 }
 
 gameScreen.getIntegerInput = () => {
