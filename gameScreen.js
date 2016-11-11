@@ -187,7 +187,7 @@ gameScreen.endTurn = () => {
     gameScreen.pushLine(gameText.starved
       .concat(gameText.fink), 100);
     Game.state = "over";
-  } else if (Game.year >= 3) {
+  } else if (Game.year >= 10) {
     Game.percent = (Game.totalPop-Game.population)/(Game.year-1);
     Game.died = Math.round(Game.percent/100*Game.totalPop);
     Game.acrePerson = Game.acres/Game.population;
