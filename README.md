@@ -14,6 +14,7 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 * ~~Add `LICENSE.md` and `README.md`~~
 * ~~Host somewhere~~
 * ~~Copy [HAMURABI](https://armlessjohn404.github.io/pong-almost-from-scratch/) project base~~
+* ~~Cleanup the old game~~
 * Update drawing/writting functions
 * Create the board
 * Create the block class
@@ -25,6 +26,7 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 * Create scoreboard
 * Create "next piece" display
 * Create high-scores
+* Add sounds
 * Improve webpage
 * Finished!
 
@@ -33,3 +35,6 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 
 ## 00:30 - Copied files from HAMURABI project and hosted the page
 Well, I'm quite slow today, but the foundations have been built. The game should be available already using [gh-pages](https://pages.github.com/)
+
+## 00:45 - Cleanup the old game
+It was quite easy to cleanup the old game, now we have a clean canvas to start working.
