@@ -1,6 +1,6 @@
 /*
-hamurabi-almost-from-scratch
-This is an attempt of making the game hamurabi using modern programming languages
+tetris-almost-from-scratch
+This is an attempt of making the game tetris using modern programming languages
 
 Copyright (C) 2017  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
 
@@ -31,12 +31,12 @@ html, body {
   margin-top: 5%;
   max-height: 80%;
   max-width: 80%;
-  border-color: #B5B58D;
+  border-color: #EEE;
   background-color: #111;
-  border-style: solid;
-  border-width: 3em;
+  /* border-style: solid; */
+  /* border-width: 1px; */
   border-radius: 1em;
-  box-shadow: 0 0 20px #B5B58D;
+  box-shadow: 0 0 10px #FFF;
 }
 
 #game-frame {

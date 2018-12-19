@@ -1,6 +1,6 @@
 /*
-hamurabi-almost-from-scratch
-This is an attempt of making the game hamurabi using modern programming languages
+tetris-almost-from-scratch
+This is an attempt of making the game tetris using modern programming languages
 
 Copyright (C) 2017  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
 

@@ -1,6 +1,6 @@
 /*
-hamurabi-almost-from-scratch
-This is an attempt of making the game hamurabi using modern programming languages
+tetris-almost-from-scratch
+This is an attempt of making the game tetris using modern programming languages
 
 Copyright (C) 2016  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
 
@@ -28,14 +28,14 @@ function blitScreen(textArr, user, cursor) {
   let lineSize = 60;
   let totalLines = 19;
   let carry = 0;
-  let printArr = []
+  let printArr = [];
   // prepare text
   textArr.slice(0, textArr.length-1).forEach(value => {
     do {
       printArr.push(value.slice(0, lineSize));
       value = value.slice(lineSize, value.length);
       carry++;
-    } while (value.length > 0)
+    } while (value.length > 0);
   });
 
   // prepare user input
