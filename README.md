@@ -57,7 +57,7 @@ Since these **almost-from-scratch** projects always have a few twists, we will
 compress the lines and draw the blocks with a single character.
 ![board compressed spacing](/report-assets/board_compressed_spacing.png)
 
-## 04:45 - Update drawing/writing functions
+## 03:45 - Update drawing/writing functions
 First of all, I had to change the structure of the project because of some
 annoying messages in my editor about variables out of scope. I renamed the files
 to use them as modules and use the [`import` statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
@@ -70,10 +70,15 @@ We also need to rotate the tetrominoes, which is simple for some pieces but not
 for others. I followed the [Super Rotation System](http://tetris.wikia.com/wiki/SRS)
 which explain how the pieces should behave:
 
-![board compressed spacing](https://i.stack.imgur.com/JLRFu.png)
+![pieces rotation map](https://i.stack.imgur.com/JLRFu.png)
 
 The final result looks like this:
 
-![board compressed spacing](/report-assets/rotation.png)
+![rotation](/report-assets/rotation.png)
 
-## 04:45 - Create the 'block' class
+## 04:00 - Create the 'block' class
+With the drawing functions in place, it was quite easy to draw the blocks. We
+don't have the collision mechanics nor the user input, that will change the
+class quite a bit.
+
+![moving](/report-assets/moving.gif)
