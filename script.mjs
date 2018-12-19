@@ -17,28 +17,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-"use strict";
+import * as gl from './gameloop.mjs';
+const VERSION = "v1.0";
 
-// main game screen
-gameScreen.init = () => {
-  Game.ctx.font = "28px VT323";
-  Game.ctx.fillStyle = "#0F0";
-  Game.ctx.lineWidth = 0.1;
-  Game.ctx.shadowColor = "#080";
-  Game.ctx.shadowOffsetX = 0;
-  Game.ctx.shadowOffsetY = 0;
-  Game.ctx.shadowBlur = 30;
-  // gameScreen.pushLine(gameText.intro.concat(gameText.help), 1000);
-  // Game.state = "over";
-  // gameScreen.cursor = true
-  setInterval(() => gameScreen.cursor=!gameScreen.cursor, 200);
-}
-
-gameScreen.draw = () => {
-  Game.ctx.clearRect(0, 0, Game.width, Game.height);
-  // blitScreen(gameScreen.text, gameScreen.userInput, gameScreen.cursor);
-}
-
-gameScreen.update = () => {
-
-}
+window.startGame = () => {
+  gl.Game.start();
+};

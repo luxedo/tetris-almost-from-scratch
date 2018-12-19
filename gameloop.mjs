@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 "use strict";
+import * as gs from './gameScreen.mjs';
 
 // preventDefault
 window.addEventListener("keydown", function (event) {
@@ -28,24 +29,24 @@ window.addEventListener("keydown", function (event) {
 
 // Game object
 let Game = {
-  fps: 60,
+  fps: 30,
   width: 800,
   height: 600
 };
 
 // Game state/ keyboard handler
-const SUPPORTED_CHARS = ` '"1!2@3#4$5%67&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP´\`[]{}~^çÇlLkKjJhHgGfFdDsSaA\\|zZxXcCvVbBnNmM,<.>;:/?`
-let gameScreen = {}
-gameScreen.keyListener = window.addEventListener("keydown", (event) => {
-  if (SUPPORTED_CHARS.indexOf(event.key) != -1) {
-    gameScreen.userInput += event.key;
-  }
-  if (event.key == "Backspace") {
-    gameScreen.userInput = gameScreen.userInput.slice(0, gameScreen.userInput.length-1);
-  } else if (event.key == "Enter") {
-    gameScreen.apply();
-  }
-});
+// const SUPPORTED_CHARS = ` '"1!2@3#4$5%67&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP´\`[]{}~^çÇlLkKjJhHgGfFdDsSaA\\|zZxXcCvVbBnNmM,<.>;:/?`;
+// let gameScreen = {};
+// gameScreen.keyListener = window.addEventListener("keydown", (event) => {
+//   if (SUPPORTED_CHARS.indexOf(event.key) != -1) {
+//     gameScreen.userInput += event.key;
+//   }
+//   if (event.key == "Backspace") {
+//     gameScreen.userInput = gameScreen.userInput.slice(0, gameScreen.userInput.length-1);
+//   } else if (event.key == "Enter") {
+//     gameScreen.apply();
+//   }
+// });
 
 // sound factory
 // function soundFactory(audio, start, stop) {
@@ -59,11 +60,11 @@ gameScreen.keyListener = window.addEventListener("keydown", (event) => {
 Game._onEachFrame = (() => {
   if (window.RequestAnimationFrame) {
    return (cb) => {
-      let _cb = () => { cb(); window.RequestAnimationFrame(_cb)}
+      let _cb = () => { cb(); window.RequestAnimationFrame(_cb);};
       _cb();
     };
   } else {
-    return (cb) => {setInterval(cb, 1000 / Game.fps)}
+    return (cb) => {setInterval(cb, 1000 / Game.fps);};
   }
 })();
 
@@ -77,32 +78,33 @@ Game.start = () => {
   document.getElementById("game-frame").appendChild(Game.canvas); // Add canvas to game-frame
 
   Game.ctx = Game.canvas.getContext("2d"); // Get canvas context
-  Game.changeState(gameScreen)
+  let screen = new gs.GameScreen(Game);
+  Game.changeState(screen);
   Game._onEachFrame(Game.run);
 };
 
 Game.changeState = screen => {
   Game.keyTimeout = Date.now() + 200;
-  screen.init();
-  Game.draw = screen.draw;
-  Game.update = screen.update;
-}
+  Game.screen = screen;
+  Game.screen.init();
+};
 
 Game.run = (() => {
   let loops = 0, skipTicks = 1000 / Game.fps,
       maxFrameSkip = 10,
-      nextGameTick = (new Date).getTime(),
+      nextGameTick = (new Date()).getTime(),
       lastGameTick;
 
   return () => {
     loops = 0;
 
-    while ((new Date).getTime() > nextGameTick) {
-      Game.update();
+    while ((new Date()).getTime() > nextGameTick) {
+      Game.screen.update();
       nextGameTick += skipTicks;
       loops++;
     }
-
-    if (loops) Game.draw();
-  }
+    if (loops) Game.screen.draw();
+  };
 })();
+
+export { Game };
