@@ -26,10 +26,13 @@ const blockTypes = {
   'j': [" ■ ", " ■ ", "■■ "],
   's': ["■■ ", " ■■", "   "],
   'z': [" ■■", "■■ ", "   "],
+  '.': ["■"],
 };
 
 // Functions
-export function drawLayers(ctx, layers) {
+export function drawLayers(ctx, layers, fillStyle, shadowColor) {
+  ctx.fillStyle = fillStyle;
+  ctx.shadowColor = shadowColor;
   layers.map(layer => {
     layer.map((row, idx) => {
       ctx.fillText(row, 20, idx * 22 + 45);
@@ -49,18 +52,17 @@ export function placePiece(board, margin, piece, row, col, rot) {
 export function rotatePiece(piece, rot) {
   if (rot == 0) {
     return piece;
-  }
-  else if (rot < 0) {
-    return rotatePiece(piece, (rot+4)%4);
+  } else if (rot < 0) {
+    return rotatePiece(piece, (rot + 4) % 4);
   } else {
     let l = piece.length;
     let newPiece = new Array(l).fill("".padStart(l));
     piece.map((row, idxRow) => {
       row.split("").map((char, idxCol) => {
-        newPiece[l-1-idxCol] = replaceAt(newPiece[l-1-idxCol], idxRow, char);
+        newPiece[l - 1 - idxCol] = replaceAt(newPiece[l - 1 - idxCol], idxRow, char);
       });
     });
-    return rotatePiece(newPiece, (rot-1)%4);
+    return rotatePiece(newPiece, (rot - 1) % 4);
   }
 }
 
@@ -82,11 +84,13 @@ export class Block {
     this.col = col;
     this.rot = rot;
     this.piece = blockTypes[type];
+    this.pieceRot = null;
+    this.rotate(rot);
+
   }
 
   place(layer) {
-    let rotPiece = rotatePiece(this.piece, this.rot);
-    rotPiece.map((line, idxRow) => {
+    this.pieceRot.map((line, idxRow) => {
       line.split("").map((char, idxCol) => {
         layer[this.row + idxRow] = replaceAt(layer[this.row + idxRow], this.margin + this.col + idxCol, char);
       });
@@ -96,5 +100,42 @@ export class Block {
   move(rows, cols) {
     this.row += rows;
     this.col += cols;
+  }
+
+  rotate(addRotation) {
+    this.rot += addRotation;
+    this.rot %= 4;
+    this.pieceRot = rotatePiece(this.piece, this.rot);
+  }
+
+  get leftpad() {
+    return this.pieceRot.reduce((acc, cur) => {
+      const pad = cur.length - cur.trimStart().length;
+      return pad < acc ? pad : acc;
+    }, Infinity);
+  }
+  get rightpad() {
+    return this.pieceRot.reduce((acc, cur) => {
+      const pad = cur.length - cur.trimEnd().length;
+      return pad < acc ? pad : acc;
+    }, Infinity);
+  }
+  get bottompad() {
+    return this.pieceRot[this.pieceRot.length-1].trim().length==0?1:0;
+  }
+  get width() {
+    return this.pieceRot[0].length;
+  }
+  get height() {
+    return this.pieceRot.length;
+  }
+  get leftmost() {
+    return this.col + this.leftpad;
+  }
+  get rightmost() {
+    return this.col + this.width - this.rightpad;
+  }
+  get bottommost() {
+    return this.row + this.height + this.bottompad;
   }
 }

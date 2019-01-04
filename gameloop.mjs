@@ -17,94 +17,119 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-"use strict";
 import * as gs from './gameScreen.mjs';
 
+class Key {
+  constructor() {
+    this._pressed = {};
+    this._active = {};
+    this.playerKeys = {
+      down: 40,
+      left: 37,
+      right: 39,
+      drop: 32,
+      sLeft: 90,
+      sRight: 88,
+    };
+    this.revPlayerKeys = {};
+    Object.keys(this.playerKeys).forEach(key => {
+      this.revPlayerKeys[this.playerKeys[key]] = key;
+      this._active[this.playerKeys[key]] = true;
+    });
+    window.addEventListener('keyup', (event) => {
+      this.onKeyup(event);
+    }, false);
+    window.addEventListener('keydown', (event) => {
+      this.onKeydown(event);
+    }, false);
+  }
+  onKeydown(event) {
+    if (!(event.keyCode in this._pressed)) {
+      this._pressed[event.keyCode] = Date.now();
+    }
+  }
+  onKeyup(event) {
+    delete this._pressed[event.keyCode];
+    this._active[event.keyCode] = true;
+  }
+  isDown(keyName) {
+    const keyCode = this.playerKeys[keyName];
+    return !!this._pressed[keyCode];
+  }
+  isActive(keyName) {
+    const keyCode = this.playerKeys[keyName];
+    const active = this._active[keyCode] && this.isDown(keyName);
+    if (active) {
+      delete this._active[keyCode];
+    }
+    return active;
+  }
+  isHolding(keyName, time) {
+    const keyCode = this.playerKeys[keyName];
+    if (Date.now() >= this._pressed[keyCode] + time) {
+      this._pressed[keyCode] = Date.now();
+      return true;
+    }
+    return false;
+  }
+}
+
 // preventDefault
-window.addEventListener("keydown", function (event) {
+window.addEventListener("keydown", function(event) {
   if ([32, 37, 38, 39, 40, 13].indexOf(event.keyCode) > -1) {
     event.preventDefault();
   }
 }, false);
 
-// Game object
-let Game = {
-  fps: 30,
-  width: 800,
-  height: 600
-};
-
-// Game state/ keyboard handler
-// const SUPPORTED_CHARS = ` '"1!2@3#4$5%67&8*9(0)-_=+qQwWeErRtTyYuUiIoOpP´\`[]{}~^çÇlLkKjJhHgGfFdDsSaA\\|zZxXcCvVbBnNmM,<.>;:/?`;
-// let gameScreen = {};
-// gameScreen.keyListener = window.addEventListener("keydown", (event) => {
-//   if (SUPPORTED_CHARS.indexOf(event.key) != -1) {
-//     gameScreen.userInput += event.key;
-//   }
-//   if (event.key == "Backspace") {
-//     gameScreen.userInput = gameScreen.userInput.slice(0, gameScreen.userInput.length-1);
-//   } else if (event.key == "Enter") {
-//     gameScreen.apply();
-//   }
-// });
-
 // sound factory
-// function soundFactory(audio, start, stop) {
-//     return () => {audio.play();
-//       setTimeout(()=>{
-//         audio.pause();
-//         audio.currentTime = start;
-//       }, stop);}
-// }
-
-Game._onEachFrame = (() => {
-  if (window.RequestAnimationFrame) {
-   return (cb) => {
-      let _cb = () => { cb(); window.RequestAnimationFrame(_cb);};
-      _cb();
-    };
-  } else {
-    return (cb) => {setInterval(cb, 1000 / Game.fps);};
-  }
-})();
-
-// Game methods
-Game.start = () => {
-  Game.canvas = document.createElement("canvas"); // Create canvas
-  Game.canvas.setAttribute("id", "game");
-  Game.canvas.width = Game.width;
-  Game.canvas.height = Game.height;
-
-  document.getElementById("game-frame").appendChild(Game.canvas); // Add canvas to game-frame
-
-  Game.ctx = Game.canvas.getContext("2d"); // Get canvas context
-  let screen = new gs.GameScreen(Game);
-  Game.changeState(screen);
-  Game._onEachFrame(Game.run);
-};
-
-Game.changeState = screen => {
-  Game.keyTimeout = Date.now() + 200;
-  Game.screen = screen;
-  Game.screen.init();
-};
-
-Game.run = (() => {
-  let loops = 0, skipTicks = 1000 / Game.fps,
-      maxFrameSkip = 10,
-      nextGameTick = (new Date()).getTime(),
-      lastGameTick;
-
+function soundFactory(audio, start, stop) {
   return () => {
-    loops = 0;
-
-    while ((new Date()).getTime() > nextGameTick) {
-      Game.screen.update();
-      nextGameTick += skipTicks;
-      loops++;
-    }
-    if (loops) Game.screen.draw();
+    audio.play();
+    setTimeout(() => {
+      audio.pause();
+      audio.currentTime = start;
+    }, stop);
   };
-})();
+}
 
-export { Game };
+// Game Class
+export class Game {
+  constructor() {
+    this.fps = 30;
+    this.width = 800;
+    this.height = 600;
+
+    this.nextUpdate = 0;
+
+    this.keys = new Key();
+
+    this.canvas = document.createElement("canvas"); // Create canvas
+    this.canvas.setAttribute("id", "game");
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+
+    document.getElementById("game-frame").appendChild(this.canvas); // Add canvas to game-frame
+
+    this.ctx = this.canvas.getContext("2d"); // Get canvas context
+  }
+  start() {
+    let screen = new gs.GameScreen(this);
+    this.changeState(screen);
+    this.run();
+  }
+  changeState(screen) {
+    this.screen = screen;
+    this.screen.init();
+  }
+  // Gameloop
+  run() {
+    if (Date.now() >= this.nextUpdate) {
+      this.nextUpdate = Date.now() + 1000 / this.fps;
+      this.screen.update();
+      this.screen.draw();
+      window.requestAnimationFrame(() => this.run());
+    } else {
+      setTimeout(() => this.run(), 1000 / this.fps / 3);
+    }
+  }
+}

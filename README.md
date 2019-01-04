@@ -18,9 +18,10 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Create the board~~
 *   ~~Update drawing/writing functions~~
 *   ~~Create the 'block' class~~
-*   Tweak the user input mechanics
-*   Create "gravity" and game timing
-*   Create collision mechanics
+*   ~~Create "gravity" and game timing~~
+*   ~~Tweak the user input mechanics~~
+*   ~~Implement rotation mechanics~~
+*   ~~Create collision mechanics~~
 *   Create line destruction mechanics
 *   Create game over mechanics
 *   Create scoreboard
@@ -39,7 +40,7 @@ Well, I'm quite slow today, but the foundations have been built. The game should
 be available already using [gh-pages](https://pages.github.com/)
 
 ## 00:45 - Cleanup the old game
-It was quite easy to cleanup the old game, now we have a clean canvas to start
+It was quite easy to cleanup the old game, now I have a clean canvas to start
 working.
 
 ## 01:30 - Creating the board
@@ -53,7 +54,7 @@ board shape:
 ![board regular spacing](/report-assets/board_regular_spacing.png)
 The original developer, [Alexey Pajitnov](https://en.wikipedia.org/wiki/Alexey_Pajitnov),
 solved this problem by using two characters for each block in the tetrominoes.
-Since these **almost-from-scratch** projects always have a few twists, we will
+Since these **almost-from-scratch** projects always have a few twists, I will
 compress the lines and draw the blocks with a single character.
 ![board compressed spacing](/report-assets/board_compressed_spacing.png)
 
@@ -61,18 +62,16 @@ compress the lines and draw the blocks with a single character.
 First of all, I had to change the structure of the project because of some
 annoying messages in my editor about variables out of scope. I renamed the files
 to use them as modules and use the [`import` statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
+
 ![modules](/report-assets/modules.png)
 
 Then, I proceeded to creating the drawing functions. First I wrote the data for
 the tetrominoes. They're just some ■ characters in the correct position.
+
 ![tetrominoes](/report-assets/tetrominoes.png)
-We also need to rotate the tetrominoes, which is simple for some pieces but not
-for others. I followed the [Super Rotation System](http://tetris.wikia.com/wiki/SRS)
-which explain how the pieces should behave:
 
-![pieces rotation map](https://i.stack.imgur.com/JLRFu.png)
-
-The final result looks like this:
+We also need to rotate the tetrominoes, I did not put much tought in for the
+rotation for now. The final result looks like this:
 
 ![rotation](/report-assets/rotation.png)
 
@@ -82,3 +81,56 @@ don't have the collision mechanics nor the user input, that will change the
 class quite a bit.
 
 ![moving](/report-assets/moving.gif)
+
+
+## 04:20 - Create "gravity" and game timing
+Gravity was quite simple to implement, just move the block down at a certain
+interval. Then, this interval was added to a variable to set the level of
+difficulty afterwards.
+
+## 06:30 - Tweak the user input mechanics
+First of all, I had to rewrite the gameloop. The old version was very confusing
+and hard to tweak. Now it's simpler and I wrote using ES6 `class` notation. This
+refactoring took quite some time.
+
+![game class](/report-assets/game_class.png)
+
+I have deleted the old user input, so we're going to make it again. I salvaged
+some of the old code, but to summarize I made a class that listen for the `keyup`
+and `keydown` events and stores the pressed buttons in an `object`. I also
+implemented three handful methods:
+-   `isDown` - Checks if the current key is pressed
+-   `isActive` - Checks if the current may be triggered again. The key gets active again if the player releases it.
+-   `isHolding` - Checks if the current key is being held for an specified time interval. This is useful to make the tetrominoes move when the player holds the key.
+
+After this refactoring we can move the pieces!!
+
+![input](/report-assets/input.gif)
+
+## 7:00 - Implement rotation mechanics
+Looking up in the interwebs, I found that the rotation mechanics has a name,
+it's called [Super Rotation System](http://tetris.wikia.com/wiki/SRS) or **SRS**
+for short.
+
+![pieces rotation map](https://i.stack.imgur.com/JLRFu.png)
+
+Fortunately, the simple rotation method that I implemented previously is exactly
+the **SRS**, So I don't need to change it:
+
+![src](/report-assets/srs.gif)
+
+## 8:30 - Create collision mechanics
+Now we need to know when the pieces are touching the borders of the board.
+There are two checks that needs to be done:
+1. Check for collision with the walls and bottom.
+2. Check for collision in spinning moves and
+[Wall Kick](http://tetris.wikia.com/wiki/Wall_kick) the tetromino when
+applicable.
+
+There's a third check that could be made, the
+[T Spin](http://tetris.wikia.com/wiki/T-Spin). Hopefully it will occur naturally.
+
+To do this, each update fires a function to check for the sides of the pieces,
+if the piece is going through a wall then it's kicked back or rotated back
+(before the draw). If the bottommost side of the piece is below another piece or
+wall, then it's kicked back and locked in place.

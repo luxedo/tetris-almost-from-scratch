@@ -21,5 +21,6 @@ import * as gl from './gameloop.mjs';
 const VERSION = "v1.0";
 
 window.startGame = () => {
-  gl.Game.start();
+  const game = new gl.Game();
+  game.start();
 };
