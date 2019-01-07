@@ -111,6 +111,8 @@ export class GameScreen extends BlankScreen {
       this.spawnTetrominoes();
       this.collided = 0;
     }
+
+    this.breakFullLines();
   }
   draw() {
     this.ctx.clearRect(0, 0, this.game.width, this.game.height);
@@ -189,5 +191,33 @@ export class GameScreen extends BlankScreen {
     if (type === "o") col++;
     if (type === "j" || type === "l") row--;
     this.currentBlocks.push(new draw.Block(type, MARGIN_LEFT - 1, row, col, 0));
+  }
+  breakFullLines() {
+    const blockCoord = this.frozenBlocks
+    .map(block => block.coordinates)
+    .flat()
+    .reduce((acc, coord) => {
+      const row = coord[0].toString();
+      const col = coord[1];
+      if (!(row.toString() in acc)) {
+        acc[row] = [col-3];
+      } else {
+        acc[row].push(col-3);
+      }
+      return acc;
+    }, {});
+    for (let row in blockCoord) {
+      if (blockCoord[row].length == 10) {
+        this.breakLine(parseInt(row));
+      }
+    }
+  }
+  breakLine(row) {
+    this.frozenBlocks = this.frozenBlocks
+    .filter(block => block.row !== row)
+    .map(block => {
+      if (block.row<row) block.row++;
+      return block;
+    });
   }
 }

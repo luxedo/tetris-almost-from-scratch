@@ -22,8 +22,8 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Tweak the user input mechanics~~
 *   ~~Implement rotation mechanics~~
 *   ~~Create collision mechanics~~
+*   ~~Create line destruction mechanics~~
 *   Create levels
-*   Create line destruction mechanics
 *   Create game over mechanics
 *   Create scoreboard
 *   Create "next piece" display
@@ -144,3 +144,13 @@ Eg: if the user spins and the piece kicks off the wall, then by rotating it agai
 it wouldn't go back to it's previous position.
 
 ![collision](/report-assets/collision.gif)
+
+## 12:10 - Create line destruction mechanics
+And we're half way there! So far we have a playable demo, but the lines that are
+full doesn't break.
+
+The solution for this was to just filter the array that contains the placed
+blocks for complete rows. Then I map over the array sliding down all pieces that
+were above that line.
+
+![break](/report-assets/break.gif)
