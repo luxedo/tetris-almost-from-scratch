@@ -24,10 +24,10 @@ class Key {
     this._pressed = {};
     this._active = {};
     this.playerKeys = {
-      down: 40,
+      drop: 40,
       left: 37,
       right: 39,
-      drop: 32,
+      hardDrop: 32,
       sLeft: 90,
       sRight: 88,
     };

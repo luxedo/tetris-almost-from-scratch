@@ -22,6 +22,7 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Tweak the user input mechanics~~
 *   ~~Implement rotation mechanics~~
 *   ~~Create collision mechanics~~
+*   Create levels
 *   Create line destruction mechanics
 *   Create game over mechanics
 *   Create scoreboard
@@ -117,9 +118,10 @@ for short.
 Fortunately, the simple rotation method that I implemented previously is exactly
 the **SRS**, So I don't need to change it:
 
-![src](/report-assets/srs.gif)
+![srs](/report-assets/srs.gif)
 
-## 8:30 - Create collision mechanics
+
+## 11:40 - Create collision mechanics
 Now we need to know when the pieces are touching the borders of the board.
 There are two checks that needs to be done:
 1. Check for collision with the walls and bottom.
@@ -134,3 +136,11 @@ To do this, each update fires a function to check for the sides of the pieces,
 if the piece is going through a wall then it's kicked back or rotated back
 (before the draw). If the bottommost side of the piece is below another piece or
 wall, then it's kicked back and locked in place.
+
+To do this it took quite some time. Sometimes the pieces would clip into each
+other, or rotate apparently at random. But alas it's done. The main problems that
+I had were to prioritize the actions to apply to the pieces according to user input.
+Eg: if the user spins and the piece kicks off the wall, then by rotating it again
+it wouldn't go back to it's previous position.
+
+![collision](/report-assets/collision.gif)

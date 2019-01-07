@@ -18,15 +18,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const blockTypes = {
-  'i': [" ■  ", " ■  ", " ■  ", " ■  "],
-  'o': ["■■", "■■"],
-  't': [" ■ ", "■■■", "   "],
-  'l': [" ■ ", " ■ ", " ■■"],
-  'j': [" ■ ", " ■ ", "■■ "],
-  's': ["■■ ", " ■■", "   "],
-  'z': [" ■■", "■■ ", "   "],
-  '.': ["■"],
+export const blockTypes = {
+  "i": ["    ", "■■■■", "    ", "    "],
+  "o": ["■■", "■■"],
+  "t": [" ■ ", "■■■", "   "],
+  "l": ["   ", "■■■", "■  "],
+  "j": ["   ", "■■■", "  ■"],
+  "s": ["■■ ", " ■■", "   "],
+  "z": [" ■■", "■■ ", "   "],
+  ".": ["■"]
 };
 
 // Functions
@@ -67,6 +67,7 @@ export function rotatePiece(piece, rot) {
 }
 
 export function replaceAt(string, index, replace) {
+  if (string === undefined) return "";
   return string.substring(0, index) + replace + string.substring(index + 1);
 }
 
@@ -107,7 +108,6 @@ export class Block {
     this.rot %= 4;
     this.pieceRot = rotatePiece(this.piece, this.rot);
   }
-
   get leftpad() {
     return this.pieceRot.reduce((acc, cur) => {
       const pad = cur.length - cur.trimStart().length;
@@ -121,7 +121,16 @@ export class Block {
     }, Infinity);
   }
   get bottompad() {
-    return this.pieceRot[this.pieceRot.length-1].trim().length==0?1:0;
+    return this.pieceRot.map(row => row
+      .trim().length)
+      .reverse()
+      .reduce((acc, cur) => {
+        if (!acc.done) {
+          if (cur == 0) acc.rows++;
+          else acc.done = true;
+        }
+        return acc;
+      }, {rows: 0, done: false}).rows;
   }
   get width() {
     return this.pieceRot[0].length;
@@ -136,6 +145,16 @@ export class Block {
     return this.col + this.width - this.rightpad;
   }
   get bottommost() {
-    return this.row + this.height + this.bottompad;
+    return this.row + this.height - this.bottompad;
+  }
+  get coordinates() {
+    return this.pieceRot
+      // .filter(line => line.trim().length != 0)
+      .map((line, idxRow) => {
+        return line.split("")
+          .map((char, idxCol) => char != " " ? [idxRow + this.row, idxCol + this.col] : null)
+          .filter(coord => coord !== null);
+      })
+      .flat();
   }
 }

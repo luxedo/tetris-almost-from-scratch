@@ -50,34 +50,36 @@ export class GameScreen extends BlankScreen {
     this.ctx.shadowOffsetY = 0;
     this.ctx.shadowBlur = 30;
     this.keyInterval = 100;
-    this.dropInterval = 10;
+    this.dropInterval = 20;
     this.speed = 1;
-    this._nextMove = Date.now();
-    // this.currentBlock = new draw.Block('l', MARGIN_LEFT-1, 5, 2, 0);
+    this.collided = 0;
+    this.setNetxMove();
     this.currentBlocks = [
       // new draw.Block('l', MARGIN_LEFT-1, 0, 10, 0),
       // new draw.Block('j', MARGIN_LEFT-1, 4, 11, 0),
-      // new draw.Block('i', MARGIN_LEFT-1, 8, 11, 0),
+      // new draw.Block('i', MARGIN_LEFT-1, 20, 11, 0),
       // new draw.Block('o', MARGIN_LEFT-1, 13, 11, 0),
-      // new draw.Block('t', MARGIN_LEFT-1, 16, 10, 0),
-      // new draw.Block('s', MARGIN_LEFT-1, 19, 10, 0),
-      new draw.Block('t', MARGIN_LEFT-1, 22, 6, 0),
-      new draw.Block('s', MARGIN_LEFT-1, 22, 3, 0),
-      new draw.Block('z', MARGIN_LEFT-1, 22, 10, 0),
+      // new draw.Block('t', MARGIN_LEFT-1, 22, 6, 0),
+      // new draw.Block('s', MARGIN_LEFT-1, 22, 3, 0),
+      // new draw.Block('z', MARGIN_LEFT-1, 22, 10, 0),
     ];
+    this.spawnTetrominoes();
     this.frozenBlocks = [];
+  }
+  setNetxMove() {
+    this._nextMove = Date.now() + 1000 * Math.pow(0.8, this.speed);
   }
   nextMove() {
     if (Date.now() >= this._nextMove) {
-      this._nextMove = Date.now() + 1000*Math.pow(0.8, this.speed);
+      this.setNetxMove();
       return true;
     }
     return false;
   }
   update() {
     if (this.nextMove()) {
-      // this.currentBlock.move(1, 0);
-      // this.checkCollisions("down");
+      this.currentBlocks.map(block => block.move(1, 0));
+      this.checkCollisions("down");
     }
     if (this.keys.isActive("left") || this.keys.isHolding("left", this.keyInterval)) {
       this.currentBlocks.map(block => block.move(0, -1));
@@ -87,9 +89,10 @@ export class GameScreen extends BlankScreen {
       this.currentBlocks.map(block => block.move(0, 1));
       this.checkCollisions("right");
     }
-    if (this.keys.isActive("down") || this.keys.isHolding("down", this.keyInterval)) {
-      this.currentBlocks.map(block => block.move(1, 0));
-      this.checkCollisions("down");
+    if (this.keys.isActive("hardDrop")) {
+      while (!this.checkCollisions("down")) {
+        this.currentBlocks.map(block => block.move(1, 0));
+      }
     }
     if (this.keys.isHolding("drop", this.dropInterval)) {
       this.currentBlocks.map(block => block.move(1, 0));
@@ -102,6 +105,11 @@ export class GameScreen extends BlankScreen {
     if (this.keys.isActive("sRight")) {
       this.currentBlocks.map(block => block.rotate(-1));
       this.checkCollisions("sRight");
+    }
+    // Spawn pieces if a bottom collision has occoured
+    if (this.collided > 0) {
+      this.spawnTetrominoes();
+      this.collided = 0;
     }
   }
   draw() {
@@ -116,25 +124,70 @@ export class GameScreen extends BlankScreen {
   checkCollisions(move) {
     let freeze = [];
     this.currentBlocks.map((block, index) => {
+      // Other blocks collision
+      this.frozenBlocks
+        .map(fBlock => {
+          const coordF = fBlock.coordinates[0];
+          const coords = block.coordinates;
+          for (let i = 0; i < coords.length; i++) {
+            const coord = coords[i];
+            if (coord[0] == coordF[0] && coord[1] == coordF[1]) {
+              if (move == "left") {
+                block.move(0, 1);
+              } else if (move == "right") {
+                block.move(0, -1);
+              } else if (move == "sLeft") {
+                block.rotate(-1);
+              } else if (move == "sRight") {
+                block.rotate(1);
+              }
+              else if (!freeze.includes(index) && move === "down") {
+                block.move(-1, 0);
+                freeze.push(index);
+                this.collided += 1;
+              }
+              break;
+            }
+          }
+        });
       // Left wall collision
-      if (block.leftmost <= 2) {  // The <= 2 corresponds to the characters "<|"
-        block.move(0, 3-block.leftmost);
+      if (block.leftmost <= 2) { // The <= 2 corresponds to the characters "<|"
+        block.move(0, 3 - block.leftmost);
       }
       // Right wall collision
       if (block.rightmost > BOARD_LENGTH + 3) { // The 3 corresponds to the characters "<|"
         block.move(0, BOARD_LENGTH + 3 - block.rightmost);
       }
       // Bottom collision
-      if (block.bottommost >= BOARD_HEIGHT+3) {
+      if (block.bottommost >= BOARD_HEIGHT + 1) {
         freeze.push(index);
         block.move(-1, 0);
-        console.log(block);
+        this.collided += 1;
       }
-      // Other blocks collision
     });
     // Freeze blocks that collided
     freeze.sort().reverse().forEach(index => {
-      this.frozenBlocks.push(...this.currentBlocks.splice(index, 1));
+      const block = this.currentBlocks.splice(index, 1)[0];
+      this.frozenBlocks.push(...block.coordinates
+        .map(coords => new draw.Block(".", MARGIN_LEFT - 1, coords[0], coords[1], 0)));
     });
+
+    return freeze.length > 0;
+  }
+  spawnTetrominoes(type) {
+    const blockNames = Object.keys(draw.blockTypes);
+    const totalBlocks = blockNames.length;
+    let blockType;
+    do {
+      blockType = blockNames[Math.floor(Math.random() * totalBlocks)];
+    }
+    while (blockType === ".");
+    type = type || blockType;
+
+    let row = 0;
+    let col = 6;
+    if (type === "o") col++;
+    if (type === "j" || type === "l") row--;
+    this.currentBlocks.push(new draw.Block(type, MARGIN_LEFT - 1, row, col, 0));
   }
 }
