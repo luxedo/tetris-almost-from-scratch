@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as draw from './draw.mjs';
 
 const BOARD_FONT = '40px monospace, "Courier New", Courier';
-const DISPLAY_FONT = '35px monospace, "Courier New", Courier';
+const DISPLAY_FONT = '26px "VT323", "Courier New", Courier';
 const MARGIN_LEFT = 9;
 const BOARD_LENGTH = 10;
 const BOARD_HEIGHT = 24;
@@ -51,23 +51,18 @@ export class GameScreen extends BlankScreen {
     this.ctx.shadowBlur = 30;
     this.keyInterval = 100;
     this.dropInterval = 20;
-    this.speed = 1;
+    this.level = 0;
+    this.score = 0;
+    this.totalBrokenLines = 0;
+    this.scoreBase = [0, 40, 100, 300, 1200];
     this.collided = 0;
     this.setNetxMove();
-    this.currentBlocks = [
-      // new draw.Block('l', MARGIN_LEFT-1, 0, 10, 0),
-      // new draw.Block('j', MARGIN_LEFT-1, 4, 11, 0),
-      // new draw.Block('i', MARGIN_LEFT-1, 20, 11, 0),
-      // new draw.Block('o', MARGIN_LEFT-1, 13, 11, 0),
-      // new draw.Block('t', MARGIN_LEFT-1, 22, 6, 0),
-      // new draw.Block('s', MARGIN_LEFT-1, 22, 3, 0),
-      // new draw.Block('z', MARGIN_LEFT-1, 22, 10, 0),
-    ];
+    this.currentBlocks = [];
     this.spawnTetrominoes();
     this.frozenBlocks = [];
   }
   setNetxMove() {
-    this._nextMove = Date.now() + 1000 * Math.pow(0.8, this.speed);
+    this._nextMove = Date.now() + 1000 * Math.pow(0.8, this.level);
   }
   nextMove() {
     if (Date.now() >= this._nextMove) {
@@ -113,6 +108,8 @@ export class GameScreen extends BlankScreen {
     }
 
     this.breakFullLines();
+
+    if (this.totalBrokenLines >= (this.level+1)*10) this.level++;
   }
   draw() {
     this.ctx.clearRect(0, 0, this.game.width, this.game.height);
@@ -121,7 +118,14 @@ export class GameScreen extends BlankScreen {
     draw.placeBlocks(this.currentBlocks, cBlocks);
     draw.placeBlocks(this.frozenBlocks, fBlocks);
     let layers = [cBlocks, fBlocks, board];
+    this.ctx.font = BOARD_FONT;
     draw.drawLayers(this.ctx, layers, this.fillStyle, this.shadowColor);
+    this.ctx.font = DISPLAY_FONT;
+    const display = [
+      `УРОВЕНЬ: ${this.level}`,
+      `СЧЕТ: ${this.score}`];
+
+    draw.drawLayers(this.ctx, [display], this.fillStyle, this.shadowColor);
   }
   checkCollisions(move) {
     let freeze = [];
@@ -206,11 +210,16 @@ export class GameScreen extends BlankScreen {
       }
       return acc;
     }, {});
+    let brokenLines = 0;
     for (let row in blockCoord) {
       if (blockCoord[row].length == 10) {
+        brokenLines++;
         this.breakLine(parseInt(row));
       }
     }
+    brokenLines = brokenLines>4?4:brokenLines;
+    this.score += this.scoreBase[brokenLines] * (this.level+1);
+    this.totalBrokenLines += brokenLines;
   }
   breakLine(row) {
     this.frozenBlocks = this.frozenBlocks

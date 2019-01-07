@@ -23,9 +23,8 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Implement rotation mechanics~~
 *   ~~Create collision mechanics~~
 *   ~~Create line destruction mechanics~~
-*   Create levels
+*   ~~Create levels/scoring~~
 *   Create game over mechanics
-*   Create scoreboard
 *   Create "next piece" display
 *   Create high-scores
 *   Add sounds
@@ -154,3 +153,13 @@ blocks for complete rows. Then I map over the array sliding down all pieces that
 were above that line.
 
 ![break](/report-assets/break.gif)
+
+
+## 13:00 - Create levels/scoring
+The scoring system I used was the [Original Nintendo Scoring System](http://tetris.wikia.com/wiki/Scoring). In summary it is a table of a base according to the number of broken lines times the current level+1.
+
+For the levels, I chose to increase it for every 10 broken lines, as in the NES version.
+
+To show the socores (`СЧЕТ`) and the level (`УРОВЕНЬ`) I decided to use the original words in russian.
+
+![score](/report-assets/score.gif)
