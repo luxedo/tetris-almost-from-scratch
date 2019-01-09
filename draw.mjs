@@ -87,7 +87,6 @@ export class Block {
     this.piece = blockTypes[type];
     this.pieceRot = null;
     this.rotate(rot);
-
   }
 
   place(layer) {
@@ -132,6 +131,17 @@ export class Block {
         return acc;
       }, {rows: 0, done: false}).rows;
   }
+  get toppad() {
+    return this.pieceRot.map(row => row
+      .trim().length)
+      .reduce((acc, cur) => {
+        if (!acc.done) {
+          if (cur == 0) acc.rows++;
+          else acc.done = true;
+        }
+        return acc;
+      }, {rows: 0, done: false}).rows;
+  }
   get width() {
     return this.pieceRot[0].length;
   }
@@ -147,6 +157,9 @@ export class Block {
   get bottommost() {
     return this.row + this.height - this.bottompad;
   }
+  get topmost() {
+    return this.row - this.toppad;
+  }
   get coordinates() {
     return this.pieceRot
       // .filter(line => line.trim().length != 0)
@@ -157,4 +170,20 @@ export class Block {
       })
       .flat();
   }
+  get type() {return this._type;}
+  set type(type) {
+    this._type = type;
+    this.piece = blockTypes[type];
+  }
 }
+
+export const randomBlockType = () => {
+  const blockNames = Object.keys(blockTypes);
+  const totalBlocks = blockNames.length;
+  let blockType;
+  do {
+    blockType = blockNames[Math.floor(Math.random() * totalBlocks)];
+  }
+  while (blockType === ".");
+  return blockType;
+};

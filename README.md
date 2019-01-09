@@ -3,17 +3,17 @@ This is an attempt of making the game [Tetris](https://en.wikipedia.org/wiki/Tet
 
 Tetris is the first software to be exported from the USSR to the US and became and not only became one of the most famous computer games, it has been released for nearly every videogame console and computer operating system.
 
-For this project, I'll be using the engine built for the [tetris-almost-from-scratch](https://github.com/ArmlessJohn404/tetris-almost-from-scratch). I'll try to improve it and try to draw only characters on screen. The idea is to simulate the original game and also show an improved view using the same engine.
+For this project, I'll be using the engine built for the [tetris-almost-from-scratch](https://github.com/luxedo/tetris-almost-from-scratch). I'll try to improve it and try to draw only characters on screen. The idea is to simulate the original game and also show an improved view using the same engine.
 ![original tetris](https://upload.wikimedia.org/wikipedia/en/7/7c/Tetris-VeryFirstVersion.png)
 
 The game is based in html5/canvas, CSS and ES6 javascript.
 
-#### Check it out [here](https://armlessjohn404.github.io/tetris-almost-from-scratch/)
+#### Check it out [here](https://luxedo.github.io/tetris-almost-from-scratch/)
 
 ## Goals
 *   ~~Add `LICENSE.md` and `README.md`~~
 *   ~~Host somewhere~~
-*   ~~Copy [TETRIS](https://armlessjohn404.github.io/pong-almost-from-scratch/) project base~~
+*   ~~Copy [TETRIS](https://luxedo.github.io/pong-almost-from-scratch/) project base~~
 *   ~~Cleanup the old game~~
 *   ~~Create the board~~
 *   ~~Update drawing/writing functions~~
@@ -24,11 +24,13 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Create collision mechanics~~
 *   ~~Create line destruction mechanics~~
 *   ~~Create levels/scoring~~
-*   Create game over mechanics
-*   Create "next piece" display
-*   Create high-scores
+*   ~~Create game over mechanics and screen~~
+*   ~~Create "next piece" display~~
+*   ~~Create Menu screen and Credits screen~~
+*   ~~Create high-scores~~
 *   Add sounds
 *   Improve webpage
+*   Fix playtesters requests
 *   Finished!
 
 ## Progress reports
@@ -163,3 +165,27 @@ For the levels, I chose to increase it for every 10 broken lines, as in the NES 
 To show the socores (`СЧЕТ`) and the level (`УРОВЕНЬ`) I decided to use the original words in russian.
 
 ![score](/report-assets/score.gif)
+
+## 15:30 - Create game over mechanics and screen
+To check for a `Game Over` is quite simple with the `Block` class. I just have
+to ask if there's any block above the screen. Then I had to create the screen
+with some options after the game is over.
+
+![Game Over](/report-assets/gameover.gif)
+
+## 16:00 - Create "next piece" display
+Finally an easy task again! For this display, we already had all the pieces in
+hand. The `Block` class provided us with the tetromino draw and the screen
+already had text in it, which I just edited.
+
+![nextpiece](/report-assets/nextpiece.gif)
+
+## 17:00 - Create Menu screen and Credits screen
+For those screens I just had to copy the `Game Over` screen and edit a bit the
+text for each one. I also created another parent class that is a screen with
+the background and border for those screens to inherit.
+
+![Menu and Credits](/report-assets/menu_credits.gif)
+
+## 19:00 - Create high-scores
+I implemented the High Scores for the [Asteroids](https://luxedo.github.io/asteroids-almost-from-scratch/) project, so I just had to copy that and do some refactoring.

@@ -24,18 +24,19 @@ class Key {
     this._pressed = {};
     this._active = {};
     this.playerKeys = {
-      drop: 40,
-      left: 37,
-      right: 39,
-      hardDrop: 32,
-      sLeft: 90,
-      sRight: 88,
+      drop: "ArrowDown",
+      down: "ArrowDown",
+      up: "ArrowUp",
+      left: "ArrowLeft",
+      right: "ArrowRight",
+      hardDrop: " ",
+      sLeft: "z",
+      sRight: "x",
+      confirm: "Enter"
     };
-    this.revPlayerKeys = {};
-    Object.keys(this.playerKeys).forEach(key => {
-      this.revPlayerKeys[this.playerKeys[key]] = key;
-      this._active[this.playerKeys[key]] = true;
-    });
+    for (let key in this.playerKeys) {
+      this._active[this.playerKeys[key].toLowerCase()] = true;
+    }
     window.addEventListener('keyup', (event) => {
       this.onKeyup(event);
     }, false);
@@ -44,20 +45,20 @@ class Key {
     }, false);
   }
   onKeydown(event) {
-    if (!(event.keyCode in this._pressed)) {
-      this._pressed[event.keyCode] = Date.now();
+    if (!(event.key.toLowerCase() in this._pressed)) {
+      this._pressed[event.key.toLowerCase()] = Date.now();
     }
   }
   onKeyup(event) {
-    delete this._pressed[event.keyCode];
-    this._active[event.keyCode] = true;
+    delete this._pressed[event.key.toLowerCase()];
+    this._active[event.key.toLowerCase()] = true;
   }
   isDown(keyName) {
-    const keyCode = this.playerKeys[keyName];
+    const keyCode = this.playerKeys[keyName].toLowerCase();
     return !!this._pressed[keyCode];
   }
   isActive(keyName) {
-    const keyCode = this.playerKeys[keyName];
+    const keyCode = this.playerKeys[keyName].toLowerCase();
     const active = this._active[keyCode] && this.isDown(keyName);
     if (active) {
       delete this._active[keyCode];
@@ -65,7 +66,7 @@ class Key {
     return active;
   }
   isHolding(keyName, time) {
-    const keyCode = this.playerKeys[keyName];
+    const keyCode = this.playerKeys[keyName].toLowerCase();
     if (Date.now() >= this._pressed[keyCode] + time) {
       this._pressed[keyCode] = Date.now();
       return true;
@@ -111,13 +112,16 @@ export class Game {
     document.getElementById("game-frame").appendChild(this.canvas); // Add canvas to game-frame
 
     this.ctx = this.canvas.getContext("2d"); // Get canvas context
+    this.ctx.shadowOffsetX = 0;
+    this.ctx.shadowOffsetY = 0;
+    this.ctx.shadowBlur = 30;
   }
   start() {
-    let screen = new gs.GameScreen(this);
-    this.changeState(screen);
+    let screen = new gs.MenuScreen(this);
+    this.changeScreen(screen);
     this.run();
   }
-  changeState(screen) {
+  changeScreen(screen) {
     this.screen = screen;
     this.screen.init();
   }
@@ -129,7 +133,7 @@ export class Game {
       this.screen.draw();
       window.requestAnimationFrame(() => this.run());
     } else {
-      setTimeout(() => this.run(), 1000 / this.fps / 3);
+      setTimeout(() => this.run(), 1000 / this.fps);
     }
   }
 }
