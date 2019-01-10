@@ -58,13 +58,13 @@ export class BackgroundScreen extends BlankScreen {
     this.shadowColorBg = "#020";
 
     this.borderBlocks = [];
-    for (let i=0; i<30; i+=5) {
-      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 0, 0, Math.floor(Math.random()*4)));
-      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 22, 0, Math.floor(Math.random()*4)));
+    for (let i = 0; i < 30; i += 5) {
+      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 0, 0, Math.floor(Math.random() * 4)));
+      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 22, 0, Math.floor(Math.random() * 4)));
     }
-    for (let i=5; i<20; i+=6) {
-      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 0, i, 0, Math.floor(Math.random()*4)));
-      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 25, i, 0, Math.floor(Math.random()*4)));
+    for (let i = 5; i < 20; i += 6) {
+      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 0, i, 0, Math.floor(Math.random() * 4)));
+      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 25, i, 0, Math.floor(Math.random() * 4)));
     }
     this.bgBlocks = makeBg();
   }
@@ -132,7 +132,7 @@ export class GameScreen extends BlankScreen {
 
       // Check for line breaks
       this.breakFullLines();
-      if (this.totalBrokenLines >= (this.level+1)*10) this.level++;
+      if (this.totalBrokenLines >= (this.level + 1) * 10) this.level++;
 
       this.checkCollisions("down");
 
@@ -167,7 +167,8 @@ export class GameScreen extends BlankScreen {
       "Scratch                                   |         |",
       "                                          |         |",
       `УРОВЕНЬ: ${this.level.toString().padEnd(33, " ")}|         |`,
-      `СЧЕТ: ${this.score.toString().padStart(4, " ").padEnd(36, " ")}+=========+`];
+      `СЧЕТ: ${this.score.toString().padStart(4, " ").padEnd(36, " ")}+=========+`
+    ];
     display.forEach((row, idx) => {
       this.ctx.fillText(row, 20, idx * 30 + 45);
     });
@@ -218,8 +219,7 @@ export class GameScreen extends BlankScreen {
                 block.rotate(-1);
               } else if (move == "sRight") {
                 block.rotate(1);
-              }
-              else if (!freeze.includes(index) && move === "down") {
+              } else if (!freeze.includes(index) && move === "down") {
                 block.move(-1, 0);
                 freeze.push(index);
                 this.collided += 1;
@@ -264,18 +264,18 @@ export class GameScreen extends BlankScreen {
   }
   breakFullLines() {
     const blockCoord = this.frozenBlocks
-    .map(block => block.coordinates)
-    .flat()
-    .reduce((acc, coord) => {
-      const row = coord[0].toString();
-      const col = coord[1];
-      if (!(row.toString() in acc)) {
-        acc[row] = [col-3];
-      } else {
-        acc[row].push(col-3);
-      }
-      return acc;
-    }, {});
+      .map(block => block.coordinates)
+      .flat()
+      .reduce((acc, coord) => {
+        const row = coord[0].toString();
+        const col = coord[1];
+        if (!(row.toString() in acc)) {
+          acc[row] = [col - 3];
+        } else {
+          acc[row].push(col - 3);
+        }
+        return acc;
+      }, {});
     let brokenLines = 0;
     for (let row in blockCoord) {
       if (blockCoord[row].length == 10) {
@@ -283,17 +283,17 @@ export class GameScreen extends BlankScreen {
         this.breakLine(parseInt(row));
       }
     }
-    brokenLines = brokenLines>4?4:brokenLines;
-    this.score += this.scoreBase[brokenLines] * (this.level+1);
+    brokenLines = brokenLines > 4 ? 4 : brokenLines;
+    this.score += this.scoreBase[brokenLines] * (this.level + 1);
     this.totalBrokenLines += brokenLines;
   }
   breakLine(row) {
     this.frozenBlocks = this.frozenBlocks
-    .filter(block => block.row !== row)
-    .map(block => {
-      if (block.row<row) block.row++;
-      return block;
-    });
+      .filter(block => block.row !== row)
+      .map(block => {
+        if (block.row < row) block.row++;
+        return block;
+      });
   }
   checkGameOver() {
     return Math.min(...this.frozenBlocks.map(block => block.topmost)) <= 0;
@@ -308,12 +308,12 @@ export class GameOverScreen extends BackgroundScreen {
   }
   init() {
     super.init();
-    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random()*4));
+    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
     this.position = 0;
     this.cursorPositions = [
-      [13-this.cursor.bottommost, 4-this.cursor.rightmost], // PLAY AGAIN
-      [16-this.cursor.bottommost, 3-this.cursor.rightmost], // MENU
-      [19-this.cursor.bottommost, 5-this.cursor.rightmost], // HIGH SCORES
+      [13 - this.cursor.bottommost, 4 - this.cursor.rightmost], // PLAY AGAIN
+      [16 - this.cursor.bottommost, 3 - this.cursor.rightmost], // MENU
+      [19 - this.cursor.bottommost, 5 - this.cursor.rightmost], // HIGH SCORES
     ];
     this.keyInterval = 200;
     this.update();
@@ -325,7 +325,7 @@ export class GameOverScreen extends BackgroundScreen {
       this.position %= this.cursorPositions.length;
     }
     if (this.keys.isActive("up") || this.keys.isHolding("up", this.keyInterval)) {
-      this.position += this.cursorPositions.length-1  ;
+      this.position += this.cursorPositions.length - 1;
       this.position %= this.cursorPositions.length;
     }
     if (this.keys.isActive("confirm") || this.keys.isActive("hardDrop") || this.keys.isActive("sRight") || this.keys.isActive("sLeft")) {
@@ -353,11 +353,11 @@ export class GameOverScreen extends BackgroundScreen {
 
     this.ctx.font = TITLE_FONT;
     this.ctx.textAlign = "center";
-    this.ctx.fillText('GAME OVER', this.canvas.width/2, 200);
+    this.ctx.fillText('GAME OVER', this.canvas.width / 2, 200);
     this.ctx.font = DISPLAY_FONT;
-    this.ctx.fillText('PLAY AGAIN', this.canvas.width/2, 310);
-    this.ctx.fillText('HIGH SCORES', this.canvas.width/2, 375);
-    this.ctx.fillText('MENU', this.canvas.width/2, 440);
+    this.ctx.fillText('PLAY AGAIN', this.canvas.width / 2, 310);
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 375);
+    this.ctx.fillText('MENU', this.canvas.width / 2, 440);
     this.ctx.textAlign = "start";
 
     this.ctx.font = BOARD_FONT;
@@ -370,12 +370,12 @@ export class GameOverScreen extends BackgroundScreen {
 export class MenuScreen extends BackgroundScreen {
   init() {
     super.init();
-    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random()*4));
+    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
     this.position = 0;
     this.cursorPositions = [
-      [13-this.cursor.bottommost, 4-this.cursor.rightmost], // PLAY AGAIN
-      [16-this.cursor.bottommost, 3-this.cursor.rightmost], // MENU
-      [19-this.cursor.bottommost, 5-this.cursor.rightmost], // HIGH SCORES
+      [13 - this.cursor.bottommost, 4 - this.cursor.rightmost], // PLAY AGAIN
+      [16 - this.cursor.bottommost, 3 - this.cursor.rightmost], // MENU
+      [19 - this.cursor.bottommost, 5 - this.cursor.rightmost], // HIGH SCORES
     ];
     this.keyInterval = 200;
     this.update();
@@ -387,7 +387,7 @@ export class MenuScreen extends BackgroundScreen {
       this.position %= this.cursorPositions.length;
     }
     if (this.keys.isActive("up") || this.keys.isHolding("up", this.keyInterval)) {
-      this.position += this.cursorPositions.length-1  ;
+      this.position += this.cursorPositions.length - 1;
       this.position %= this.cursorPositions.length;
     }
     if (this.keys.isActive("confirm") || this.keys.isActive("hardDrop") || this.keys.isActive("sRight") || this.keys.isActive("sLeft")) {
@@ -416,25 +416,42 @@ export class MenuScreen extends BackgroundScreen {
 
     this.ctx.font = TITLE_FONT;
     this.ctx.textAlign = "center";
-    this.ctx.fillText('Tetris', this.canvas.width/2, 150);
-    this.ctx.fillText('Almost From Scratch', this.canvas.width/2, 195);
+    this.ctx.fillText('Tetris', this.canvas.width / 2, 150);
+    this.ctx.fillText('Almost From Scratch', this.canvas.width / 2, 195);
     this.ctx.font = DISPLAY_FONT;
-    this.ctx.fillText('PLAY', this.canvas.width/2, 310);
-    this.ctx.fillText('HIGH SCORES', this.canvas.width/2, 375);
-    this.ctx.fillText('CREDITS', this.canvas.width/2, 440);
+    this.ctx.fillText('PLAY', this.canvas.width / 2, 310);
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 375);
+    this.ctx.fillText('CREDITS', this.canvas.width / 2, 440);
+    this.ctx.font = CREDITS_FONT;
+    this.ctx.fillText('v1.0', this.canvas.width / 2, 500);
     this.ctx.textAlign = "start";
   }
 }
 
 export class HighScoreScreen extends BlankScreen {
+  init() {
+    const URI = "https://firestore.googleapis.com/v1beta1/projects/tetris-almost-from-scratch/databases/(default)/documents/scores?pageSize=10&orderBy=score%20desc";
+    fetch(URI).then((response) => {
+      if (!response.ok) {
+        throw new Error('HTTP error, status = ' + response.status);
+      }
+      return response.blob();
+    });
+  }
+  update() {
+
+  }
+  draw() {
+
+  }
 }
 
 export class CreditsScreen extends BackgroundScreen {
   init() {
     super.init();
-    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random()*4));
-    this.cursor.row = 23-this.cursor.bottommost;
-    this.cursor.col = 5-this.cursor.rightmost;
+    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
+    this.cursor.row = 23 - this.cursor.bottommost;
+    this.cursor.col = 5 - this.cursor.rightmost;
   }
   update() {
     super.update();
@@ -457,11 +474,11 @@ export class CreditsScreen extends BackgroundScreen {
     this.ctx.font = TITLE_FONT;
     this.ctx.textAlign = "center";
     // this.ctx.fillText('TETRIS ALMOST FROM SCRATCH', this.canvas.width/2, 100);
-    this.ctx.fillText('Tetris', this.canvas.width/2, 150);
-    this.ctx.fillText('Almost From Scratch', this.canvas.width/2, 195);
+    this.ctx.fillText('Tetris', this.canvas.width / 2, 150);
+    this.ctx.fillText('Almost From Scratch', this.canvas.width / 2, 195);
 
     this.ctx.font = DISPLAY_FONT;
-    this.ctx.fillText('BACK', this.canvas.width/2, 510);
+    this.ctx.fillText('BACK', this.canvas.width / 2, 510);
 
     this.ctx.font = CREDITS_FONT;
     this.ctx.textAlign = "start";
@@ -479,16 +496,17 @@ export class CreditsScreen extends BackgroundScreen {
       "",
     ];
     const textCopyright = ["This project is under a GNU GPL3 license. Have fun!",
-    "Copyright (C) 2019  Luiz Eduardo Amaral",
-    "<luizamaral306(at)gmail.com>"];
+      "Copyright (C) 2019  Luiz Eduardo Amaral",
+      "<luizamaral306(at)gmail.com>"
+    ];
 
     text.forEach((row, idx) => {
-      this.ctx.fillText(row, 130, 250+idx*(CREDITS_FONT_SIZE));
+      this.ctx.fillText(row, 130, 250 + idx * (CREDITS_FONT_SIZE));
     });
 
     this.ctx.textAlign = "center";
     textCopyright.forEach((row, idx) => {
-      this.ctx.fillText(row, this.canvas.width/2, 430+idx*(CREDITS_FONT_SIZE));
+      this.ctx.fillText(row, this.canvas.width / 2, 430 + idx * (CREDITS_FONT_SIZE));
     });
     this.ctx.textAlign = "start";
   }
@@ -496,9 +514,9 @@ export class CreditsScreen extends BackgroundScreen {
 
 const makeBg = () => {
   let bgBlocks = [];
-  for (let i=0; i<30; i+=5) {
-    for (let j=0; j<25; j+=5) {
-      bgBlocks.push(new draw.Block(draw.randomBlockType(), i, j, 0, Math.floor(Math.random()*4)));
+  for (let i = 0; i < 30; i += 5) {
+    for (let j = 0; j < 25; j += 5) {
+      bgBlocks.push(new draw.Block(draw.randomBlockType(), i, j, 0, Math.floor(Math.random() * 4)));
     }
   }
   return bgBlocks;
@@ -506,9 +524,9 @@ const makeBg = () => {
 
 const randomizeBlocks = (blocks, chanceRot, chanceChange) => {
   blocks.forEach(block => {
-    const type = Math.random()<chanceChange?draw.randomBlockType():block.type;
+    const type = Math.random() < chanceChange ? draw.randomBlockType() : block.type;
     block.type = type;
-    const rot = Math.random() < chanceRot?1:0;
+    const rot = Math.random() < chanceRot ? 1 : 0;
     block.rotate(rot);
   });
 };

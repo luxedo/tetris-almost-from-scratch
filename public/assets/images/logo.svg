@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="512"
+   height="512"
+   viewBox="0 0 135.46666 135.46667"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/john/github/projs/tetris-almost-from-scratch/oi/assets/logo.png"
+   inkscape:export-xdpi="200"
+   inkscape:export-ydpi="200">
+  <defs
+     id="defs2">
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Blur"
+       id="filter881">
+      <feGaussianBlur
+         stdDeviation="2 2"
+         result="blur"
+         id="feGaussianBlur879" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Blur"
+       id="filter1099">
+      <feGaussianBlur
+         stdDeviation="5 5"
+         result="blur"
+         id="feGaussianBlur1097" />
+    </filter>
+    <filter
+       inkscape:label="Evanescent"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Blur the contents of objects, preserving the outline and adding progressive transparency at edges"
+       style="color-interpolation-filters:sRGB;"
+       id="filter1115">
+      <feGaussianBlur
+         result="result6"
+         stdDeviation="3"
+         in="SourceGraphic"
+         id="feGaussianBlur1109" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 "
+         result="result7"
+         in="SourceGraphic"
+         id="feColorMatrix1111" />
+      <feComposite
+         operator="in"
+         in="result6"
+         in2="result7"
+         id="feComposite1113" />
+    </filter>
+    <filter
+       inkscape:label="Blur Double"
+       inkscape:menu="Blurs"
+       inkscape:menu-tooltip="Overlays two copies with different blur amounts and modifiable blend and composite"
+       style="color-interpolation-filters:sRGB;"
+       id="filter1217">
+      <feGaussianBlur
+         stdDeviation="5"
+         result="fbSourceGraphic"
+         id="feGaussianBlur1209" />
+      <feGaussianBlur
+         stdDeviation="0.01"
+         in="SourceGraphic"
+         result="result1"
+         id="feGaussianBlur1211" />
+      <feComposite
+         in2="result1"
+         operator="arithmetic"
+         in="fbSourceGraphic"
+         k2="0.5"
+         k3="0.5"
+         result="result2"
+         id="feComposite1213" />
+      <feBlend
+         in2="fbSourceGraphic"
+         mode="normal"
+         result="result3"
+         id="feBlend1215" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="350.57434"
+     inkscape:cy="138.61978"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="842"
+     inkscape:window-height="435"
+     inkscape:window-x="763"
+     inkscape:window-y="213"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-161.53332)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.09950528;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961"
+       id="rect815"
+       width="135.36716"
+       height="135.36716"
+       x="0.049752638"
+       y="161.58307" />
+    <g
+       id="g850"
+       transform="rotate(-26.854024,58.84457,230.78162)"
+       style="filter:url(#filter1099)">
+      <rect
+         y="215.59216"
+         x="22.10067"
+         height="31.646782"
+         width="31.646782"
+         id="rect817"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+      <rect
+         y="215.59216"
+         x="53.747452"
+         height="31.646784"
+         width="31.646784"
+         id="rect817-3"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+      <rect
+         y="215.59216"
+         x="85.394234"
+         height="31.646784"
+         width="31.646784"
+         id="rect817-6"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+      <rect
+         y="183.94537"
+         x="53.747452"
+         height="31.646784"
+         width="31.646784"
+         id="rect817-7"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+    </g>
+    <g
+       id="g850-1"
+       transform="rotate(-26.854023,58.844569,230.78162)"
+       style="filter:url(#filter1115)">
+      <rect
+         y="215.59216"
+         x="22.10067"
+         height="31.646782"
+         width="31.646782"
+         id="rect817-2"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+      <rect
+         y="215.59216"
+         x="53.747452"
+         height="31.646784"
+         width="31.646784"
+         id="rect817-3-7"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+      <rect
+         y="215.59216"
+         x="85.394234"
+         height="31.646784"
+         width="31.646784"
+         id="rect817-6-0"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+      <rect
+         y="183.94537"
+         x="53.747452"
+         height="31.646784"
+         width="31.646784"
+         id="rect817-7-9"
+         style="fill:#00c800;fill-opacity:1;stroke:#ffffff;stroke-width:0.10321723;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.74901961" />
+    </g>
+    <g
+       id="g1227"
+       transform="translate(-4.6231267)">
+      <flowRoot
+         transform="matrix(0.26458333,0,0,0.26458333,26.726953,93.112324)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:'IBM 3270';-inkscape-font-specification:'IBM 3270, ';letter-spacing:0px;word-spacing:0px;fill:#00c800;fill-opacity:1;stroke:none;filter:url(#filter1217)"
+         id="flowRoot1125"
+         xml:space="preserve"><flowRegion
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'IBM 3270';-inkscape-font-specification:'IBM 3270, ';fill:#00c800;fill-opacity:1"
+           id="flowRegion1127"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'IBM 3270';-inkscape-font-specification:'IBM 3270, ';fill:#00c800;fill-opacity:1;stroke-width:0.4021478"
+             y="630.18787"
+             x="52.527931"
+             height="145.46194"
+             width="239.40613"
+             id="rect1129" /></flowRegion><flowPara
+           transform="matrix(0.33553716,0,0,0.48198196,34.902858,326.44868)"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:120px;font-family:'IBM 3270 Narrow';-inkscape-font-specification:'IBM 3270 Narrow Medium'"
+           id="flowPara1131">TAFS</flowPara></flowRoot>      <flowRoot
+         transform="matrix(0.26458333,0,0,0.26458333,26.734897,92.971793)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:'IBM 3270';-inkscape-font-specification:'IBM 3270, ';letter-spacing:0px;word-spacing:0px;fill:#00c800;fill-opacity:1;stroke:none"
+         id="flowRoot1125-1"
+         xml:space="preserve"><flowRegion
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'IBM 3270';-inkscape-font-specification:'IBM 3270, ';fill:#00c800;fill-opacity:1"
+           id="flowRegion1127-3"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'IBM 3270';-inkscape-font-specification:'IBM 3270, ';fill:#00c800;fill-opacity:1;stroke-width:0.4021478"
+             y="630.18787"
+             x="52.527931"
+             height="145.46194"
+             width="239.40613"
+             id="rect1129-9" /></flowRegion><flowPara
+           transform="matrix(0.33553716,0,0,0.48198196,34.902858,326.44868)"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:120px;font-family:'IBM 3270 Narrow';-inkscape-font-specification:'IBM 3270 Narrow Medium'"
+           id="flowPara1131-6">TAFS</flowPara></flowRoot>    </g>
+  </g>
+</svg>
