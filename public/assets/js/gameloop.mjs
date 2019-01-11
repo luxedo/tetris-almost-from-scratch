@@ -23,7 +23,7 @@ class Key {
   constructor() {
     this._pressed = {};
     this._active = {};
-    this.playerKeys = {
+    this.playerKeys = Object.assign({
       drop: "ArrowDown",
       down: "ArrowDown",
       up: "ArrowUp",
@@ -32,8 +32,10 @@ class Key {
       hardDrop: " ",
       sLeft: "z",
       sRight: "x",
-      confirm: "Enter"
-    };
+      confirm: "Enter",
+      backspace: "Backspace",
+      spacebar: " "
+    }, gs.alphabeth);
     for (let key in this.playerKeys) {
       this._active[this.playerKeys[key].toLowerCase()] = true;
     }
@@ -82,20 +84,89 @@ window.addEventListener("keydown", function(event) {
   }
 }, false);
 
-// sound factory
-function soundFactory(audio, start, stop) {
-  return () => {
-    audio.play();
-    setTimeout(() => {
-      audio.pause();
-      audio.currentTime = start;
-    }, stop);
-  };
+class SoundStore {
+  constructor(files) {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    this._mute = false;
+    this.context = new AudioContext();
+    this.gainNode = this.context.createGain();
+    this.gainNode.connect(this.context.destination);
+    this.files = files;
+    this.buffers = {};
+    this.sounds = {};
+    Object.keys(files).forEach(name => {
+      fetch(files[name])
+      .then(response => response.arrayBuffer())
+      .then(buffer => {
+        this.context.decodeAudioData(buffer, decodedData => {
+          this.buffers[name] = decodedData;
+        });
+      });
+    });
+  }
+  createSource(name) {
+    return new Promise((resolve, reject) => {
+      const source = this.context.createBufferSource();
+      source.buffer = this.buffers[name];
+      source.connect(this.gainNode);
+      this.sounds[name] = source;
+      source.onended = (event) => {
+        delete this.sounds[name];
+      };
+      resolve();
+    });
+  }
+  play(name) {
+    return new Promise((resolve, reject) => {
+      if (this.mute) return;
+      if (name in this.sounds) {
+        delete this.sounds[name];
+      }
+      if (name in this.files) {
+        if (!(name in this.buffers)) {
+        } else {
+          this.createSource(name).then(() => {
+            try {
+              this.sounds[name].start(0);
+            } catch (err){
+              // console.log(err);
+            }
+            resolve();
+          });
+        }
+      } else {
+      }
+    });
+  }
+  loop(name) {
+    if (this.mute) return;
+    this.play(name).then(() => {
+      this.sounds[name].loop = true;
+    });
+  }
+  stop(name) {
+    if (name in this.sounds) {
+      this.sounds[name].stop();
+      return true;
+    }
+    return false;
+  }
+  isPlaying(name) {
+    return name in this.sounds;
+  }
+  get mute() {
+    return this._mute;
+  }
+  set mute(val) {
+    this._mute = val;
+    this.gainNode.gain.value = val?0:1;
+  }
 }
 
 // Game Class
 export class Game {
-  constructor() {
+  constructor(firestore) {
+    this.firestore = firestore;
     this.fps = 30;
     this.width = 800;
     this.height = 600;
@@ -103,6 +174,15 @@ export class Game {
     this.nextUpdate = 0;
 
     this.keys = new Key();
+
+    const audioFiles = {
+      theme: "assets/sounds/theme.mp3",
+      gameover: "assets/sounds/gameover.mp3",
+      blip: "assets/sounds/275897__n-audioman__blip.wav",
+      break: "assets/sounds/270332__littlerobotsoundfactory__hit-03.wav",
+      hit: "assets/sounds/391668__jeckkech__hit.wav",
+    };
+    this.sounds = new SoundStore(audioFiles);
 
     this.canvas = document.createElement("canvas"); // Create canvas
     this.canvas.setAttribute("id", "game");

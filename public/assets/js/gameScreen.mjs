@@ -19,18 +19,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 import * as draw from './draw.mjs';
 
+export const alphabeth = {
+  a: "a", b: "b", c: "c", d: "d", e: "e", f: "f", g: "g", h: "h", i: "i",
+  j: "j", k: "k", l: "l", m: "m", n: "n", o: "o", p: "p", q: "q", r: "r",
+  s: "s", t: "t", u: "u", v: "v", y: "y", x: "x", w: "w", z: "z"
+};
+
 const FONT_FAMILY = '"Lucida Sans Typewriter", "Lucida Console", monospace';
 const BOARD_FONT_SIZE = 45;
 const DISPLAY_FONT_SIZE = 24;
 const TITLE_FONT_SIZE = 45;
-const CREDITS_FONT_SIZE = 16;
+const SMALL_FONT_SIZE = 16;
+const SCORE_FONT_SIZE = 90;
 const BOARD_FONT = `${BOARD_FONT_SIZE}px ${FONT_FAMILY}`;
 const DISPLAY_FONT = `${DISPLAY_FONT_SIZE}px ${FONT_FAMILY}`;
 const TITLE_FONT = `${TITLE_FONT_SIZE}px ${FONT_FAMILY}`;
-const CREDITS_FONT = `${CREDITS_FONT_SIZE}px ${FONT_FAMILY}`;
+const SMALL_FONT = `${SMALL_FONT_SIZE}px ${FONT_FAMILY}`;
+const SCORE_FONT = `${SCORE_FONT_SIZE}px ${FONT_FAMILY}`;
 const MARGIN_LEFT = 8;
 const BOARD_LENGTH = 10;
 const BOARD_HEIGHT = 24;
+const COLLECTION = "scores";
 
 let board = new Array(BOARD_HEIGHT).fill("<!".padStart(MARGIN_LEFT + 2, " ") + "".padStart(BOARD_LENGTH, " ") + "!>");
 board.push("<!".padStart(MARGIN_LEFT + 2, " ") + "".padStart(BOARD_LENGTH, "=") + "!>");
@@ -66,11 +75,11 @@ export class BackgroundScreen extends BlankScreen {
       this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 0, i, 0, Math.floor(Math.random() * 4)));
       this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 25, i, 0, Math.floor(Math.random() * 4)));
     }
-    this.bgBlocks = makeBg();
+    this.bgBlocks = this.makeBg();
   }
   update() {
-    randomizeBlocks(this.borderBlocks, 0.05, 0.05);
-    randomizeBlocks(this.bgBlocks, 0.05, 0.05);
+    this.randomizeBlocks(this.borderBlocks, 0.05, 0.05);
+    this.randomizeBlocks(this.bgBlocks, 0.05, 0.05);
   }
   draw() {
     this.ctx.clearRect(0, 0, this.game.width, this.game.height);
@@ -86,6 +95,23 @@ export class BackgroundScreen extends BlankScreen {
 
     this.ctx.fillStyle = this.fillStyle;
     this.ctx.shadowColor = this.shadowColor;
+  }
+  makeBg() {
+    let bgBlocks = [];
+    for (let i = 0; i < 30; i += 5) {
+      for (let j = 0; j < 25; j += 5) {
+        bgBlocks.push(new draw.Block(draw.randomBlockType(), i, j, 0, Math.floor(Math.random() * 4)));
+      }
+    }
+    return bgBlocks;
+  }
+  randomizeBlocks(blocks, chanceRot, chanceChange) {
+    blocks.forEach(block => {
+      const type = Math.random() < chanceChange ? draw.randomBlockType() : block.type;
+      block.type = type;
+      const rot = Math.random() < chanceRot ? 1 : 0;
+      block.rotate(rot);
+    });
   }
 }
 
@@ -138,8 +164,16 @@ export class GameScreen extends BlankScreen {
 
       // Game over
       if (this.checkGameOver()) {
-        this.game.changeScreen(new GameOverScreen(this.game, this.level, this.score));
+        this.game.sounds.play("gameover");
+        this.update = () => {};
+        setTimeout(() => {
+          this.game.changeScreen(new GameOverScreen(this.game, this.level, this.score));
+        }, 2000);
       }
+    }
+
+    if (this.game.sounds.isPlaying("theme")) {
+      this.game.sounds.stop("theme");
     }
   }
   draw() {
@@ -188,14 +222,16 @@ export class GameScreen extends BlankScreen {
       }
     }
     if (this.keys.isHolding("drop", this.dropInterval)) {
-      this.currentBlocks.map(block => block.move(1, 0));
+       this.currentBlocks.map(block => block.move(1, 0));
       this.checkCollisions("down");
     }
     if (this.keys.isActive("sLeft")) {
+      this.game.sounds.play("blip");
       this.currentBlocks.map(block => block.rotate(1));
       this.checkCollisions("sLeft");
     }
     if (this.keys.isActive("sRight")) {
+      this.game.sounds.play("blip");
       this.currentBlocks.map(block => block.rotate(-1));
       this.checkCollisions("sRight");
     }
@@ -220,6 +256,7 @@ export class GameScreen extends BlankScreen {
               } else if (move == "sRight") {
                 block.rotate(1);
               } else if (!freeze.includes(index) && move === "down") {
+                this.game.sounds.play("hit");
                 block.move(-1, 0);
                 freeze.push(index);
                 this.collided += 1;
@@ -238,6 +275,7 @@ export class GameScreen extends BlankScreen {
       }
       // Bottom collision
       if (block.bottommost >= BOARD_HEIGHT + 1) {
+        this.game.sounds.play("hit");
         freeze.push(index);
         block.move(-1, 0);
         this.collided += 1;
@@ -286,6 +324,11 @@ export class GameScreen extends BlankScreen {
     brokenLines = brokenLines > 4 ? 4 : brokenLines;
     this.score += this.scoreBase[brokenLines] * (this.level + 1);
     this.totalBrokenLines += brokenLines;
+    for (let i=0; i<brokenLines; i++) {
+      setTimeout(() => {
+        this.game.sounds.play("break");
+      }, 0+50*i);
+    }
   }
   breakLine(row) {
     this.frozenBlocks = this.frozenBlocks
@@ -296,6 +339,7 @@ export class GameScreen extends BlankScreen {
       });
   }
   checkGameOver() {
+    // console.log(this.frozenBlocks.map(block => block.topmost));
     return Math.min(...this.frozenBlocks.map(block => block.topmost)) <= 0;
   }
 }
@@ -309,38 +353,74 @@ export class GameOverScreen extends BackgroundScreen {
   init() {
     super.init();
     this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
+    this.typingCursorPos = 0;
+    this.blinkTypingCursor = false;
+    this.typingCursorInterval = setInterval(() => {
+      this.blinkTypingCursor = !this.blinkTypingCursor;
+    }, 500);
     this.position = 0;
     this.cursorPositions = [
-      [13 - this.cursor.bottommost, 4 - this.cursor.rightmost], // PLAY AGAIN
-      [16 - this.cursor.bottommost, 3 - this.cursor.rightmost], // MENU
-      [19 - this.cursor.bottommost, 5 - this.cursor.rightmost], // HIGH SCORES
+      [15 - this.cursor.bottommost, 5 - this.cursor.rightmost], // SUBMIT
+      [17 - this.cursor.bottommost, 4 - this.cursor.rightmost], // PLAY AGAIN
+      [19 - this.cursor.bottommost, 3 - this.cursor.rightmost], // MENU
+      [21 - this.cursor.bottommost, 5 - this.cursor.rightmost], // HIGH SCORES
     ];
     this.keyInterval = 200;
     this.update();
+    this.name = "";
+    this.maxNameLength = 12;
   }
   update() {
     super.update();
     if (this.keys.isActive("down") || this.keys.isHolding("down", this.keyInterval)) {
+      this.game.sounds.play("blip");
       this.position++;
       this.position %= this.cursorPositions.length;
+      if (!!this.sent && this.position==0) {
+        this.position = 1;
+      }
     }
     if (this.keys.isActive("up") || this.keys.isHolding("up", this.keyInterval)) {
+      this.game.sounds.play("blip");
       this.position += this.cursorPositions.length - 1;
       this.position %= this.cursorPositions.length;
+      if (!!this.sent && this.position==0) {
+        this.position = this.cursorPositions.length-1;
+      }
     }
-    if (this.keys.isActive("confirm") || this.keys.isActive("hardDrop") || this.keys.isActive("sRight") || this.keys.isActive("sLeft")) {
+    if (this.keys.isActive("confirm")) {
       switch (this.position) {
         case 0:
-          this.game.changeScreen(new GameScreen(this.game));
+          this.submit();
           break;
         case 1:
-          this.game.changeScreen(new HighScoreScreen(this.game));
+          this.game.changeScreen(new GameScreen(this.game));
           break;
         case 2:
+          this.game.changeScreen(new HighScoresScreen(this.game));
+          break;
+        case 3:
           this.game.changeScreen(new MenuScreen(this.game));
           break;
       }
     }
+
+    Object.keys(alphabeth).map(key => {
+      if ((this.keys.isActive(key) || this.keys.isHolding(key, this.keyInterval)) && this.name.length <= this.maxNameLength) {
+        this.name += key.toUpperCase();
+      }
+    });
+    if (this.keys.isActive("backspace") || this.keys.isHolding("backspace", this.keyInterval)) {
+      this.name = this.name.substring(0, this.name.length-1);
+    }
+
+    if (this.keys.isActive("backspace") || this.keys.isHolding("backspace", this.keyInterval)) {
+      this.name = this.name.substring(0, this.name.length-1);
+    }
+    if ((this.keys.isActive("spacebar") || this.keys.isHolding("spacebar", this.keyInterval)) && this.name.length <= this.maxNameLength) {
+      this.name += " ";
+    }
+
     this.cursor.row = this.cursorPositions[this.position][0];
     this.cursor.col = this.cursorPositions[this.position][1];
   }
@@ -353,17 +433,42 @@ export class GameOverScreen extends BackgroundScreen {
 
     this.ctx.font = TITLE_FONT;
     this.ctx.textAlign = "center";
-    this.ctx.fillText('GAME OVER', this.canvas.width / 2, 200);
+    this.ctx.fillText('GAME OVER', this.canvas.width / 2, 150);
+
+    this.ctx.font = SCORE_FONT;
+    this.ctx.fillText(`${this.score}`, this.canvas.width / 2, 240);
     this.ctx.font = DISPLAY_FONT;
-    this.ctx.fillText('PLAY AGAIN', this.canvas.width / 2, 310);
-    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 375);
-    this.ctx.fillText('MENU', this.canvas.width / 2, 440);
+    if (!this.sent) {
+      this.ctx.fillText('SUBMIT', this.canvas.width / 2, 350);
+      if (this.blinkTypingCursor) {
+        this.ctx.fillText('_', 350+this.name.length*(DISPLAY_FONT_SIZE-9.5), 280);
+      }
+    }
+    this.ctx.fillText('PLAY AGAIN', this.canvas.width / 2, 395);
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 440);
+    this.ctx.fillText('MENU', this.canvas.width / 2, 485);
     this.ctx.textAlign = "start";
+    this.ctx.fillText(`NAME: ${this.name}`, 250, 280);
 
     this.ctx.font = BOARD_FONT;
     this.cursorMatrix = new Array(26).fill(" ".repeat(25));
     draw.placeBlocks([this.cursor], this.cursorMatrix);
     draw.drawLayers(this.ctx, [this.cursorMatrix], this.fillStyle, this.shadowColor);
+  }
+  submit() {
+    if (!this.sent && this.name!="") {
+      this.game.firestore.collection(COLLECTION).add({
+        name: this.name,
+        level: this.level,
+        score: this.score
+      })
+      .catch(error => {
+        throw error;
+      });
+      this.sent = true;
+      this.position++;
+    } else {
+    }
   }
 }
 
@@ -373,9 +478,10 @@ export class MenuScreen extends BackgroundScreen {
     this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
     this.position = 0;
     this.cursorPositions = [
-      [13 - this.cursor.bottommost, 4 - this.cursor.rightmost], // PLAY AGAIN
-      [16 - this.cursor.bottommost, 3 - this.cursor.rightmost], // MENU
-      [19 - this.cursor.bottommost, 5 - this.cursor.rightmost], // HIGH SCORES
+      [12 - this.cursor.bottommost, 5 - this.cursor.rightmost], // PLAY
+      [14 - this.cursor.bottommost, 3 - this.cursor.rightmost], // HIGH SCORES
+      [16 - this.cursor.bottommost, 5 - this.cursor.rightmost], // MUTE
+      [18 - this.cursor.bottommost, 4 - this.cursor.rightmost], // CREDITS
     ];
     this.keyInterval = 200;
     this.update();
@@ -383,10 +489,12 @@ export class MenuScreen extends BackgroundScreen {
   update() {
     super.update();
     if (this.keys.isActive("down") || this.keys.isHolding("down", this.keyInterval)) {
+      this.game.sounds.play("blip");
       this.position++;
       this.position %= this.cursorPositions.length;
     }
     if (this.keys.isActive("up") || this.keys.isHolding("up", this.keyInterval)) {
+      this.game.sounds.play("blip");
       this.position += this.cursorPositions.length - 1;
       this.position %= this.cursorPositions.length;
     }
@@ -396,15 +504,22 @@ export class MenuScreen extends BackgroundScreen {
           this.game.changeScreen(new GameScreen(this.game));
           break;
         case 1:
-          this.game.changeScreen(new HighScoreScreen(this.game));
+          this.game.changeScreen(new HighScoresScreen(this.game));
           break;
         case 2:
+          this.game.sounds.mute = !this.game.sounds.mute;
+          break;
+        case 3:
           this.game.changeScreen(new CreditsScreen(this.game));
           break;
       }
     }
     this.cursor.row = this.cursorPositions[this.position][0];
     this.cursor.col = this.cursorPositions[this.position][1];
+
+    if (!this.game.sounds.isPlaying("theme")) {
+      this.game.sounds.loop("theme");
+    }
   }
   draw() {
     // this.ctx.clearRect(0, 0, this.game.width, this.game.height);
@@ -419,30 +534,68 @@ export class MenuScreen extends BackgroundScreen {
     this.ctx.fillText('Tetris', this.canvas.width / 2, 150);
     this.ctx.fillText('Almost From Scratch', this.canvas.width / 2, 195);
     this.ctx.font = DISPLAY_FONT;
-    this.ctx.fillText('PLAY', this.canvas.width / 2, 310);
-    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 375);
-    this.ctx.fillText('CREDITS', this.canvas.width / 2, 440);
-    this.ctx.font = CREDITS_FONT;
-    this.ctx.fillText('v1.0', this.canvas.width / 2, 500);
+    this.ctx.fillText('PLAY', this.canvas.width / 2, 290);
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 335);
+    this.ctx.fillText('MUTE', this.canvas.width / 2, 380);
+    this.ctx.fillText('CREDITS', this.canvas.width / 2, 425);
+    this.ctx.fillText('Controls', this.canvas.width / 4, 430);
+    this.ctx.font = SMALL_FONT;
+    this.ctx.fillText('Arrows: Move', this.canvas.width / 4 , 450);
+    this.ctx.fillText('Z, X: Rotate', this.canvas.width / 4 , 470);
+    this.ctx.fillText('Spacebar: Hard Drop', this.canvas.width / 4, 490);
+    this.ctx.fillText('v0.0-beta', this.canvas.width / 4 * 3, 460);
     this.ctx.textAlign = "start";
   }
 }
 
-export class HighScoreScreen extends BlankScreen {
+export class HighScoresScreen extends BackgroundScreen {
   init() {
-    const URI = "https://firestore.googleapis.com/v1beta1/projects/tetris-almost-from-scratch/databases/(default)/documents/scores?pageSize=10&orderBy=score%20desc";
-    fetch(URI).then((response) => {
-      if (!response.ok) {
-        throw new Error('HTTP error, status = ' + response.status);
-      }
-      return response.blob();
-    });
+    super.init();
+
+    this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
+    this.cursor.row = 23 - this.cursor.bottommost;
+    this.cursor.col = 5 - this.cursor.rightmost;
+
+    this.data = [];
+    this.game.firestore.collection(COLLECTION).orderBy("score", "desc")
+      .limit(10)
+      .get()
+      .then((querySnapshot) => {
+        this.data = querySnapshot.docs.map(doc => doc.data());
+      });
   }
   update() {
-
+    super.update();
+    if (this.keys.isActive("confirm") || this.keys.isActive("hardDrop") || this.keys.isActive("sRight") || this.keys.isActive("sLeft")) {
+      this.game.changeScreen(new MenuScreen(this.game));
+    }
   }
   draw() {
+    super.draw();
 
+    this.ctx.textAlign = "center";
+
+    this.ctx.font = TITLE_FONT;
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 150);
+    if (this.data.length == 0) {
+      this.ctx.fillText("Waiting data...", this.canvas.width/2, 300);
+    } else {
+      this.ctx.fillText(`Master ${this.data[0].name}!`, this.canvas.width/2, 230);
+    }
+
+    this.ctx.font = DISPLAY_FONT;
+    this.ctx.fillText('BACK', this.canvas.width / 2, 510);
+    this.ctx.textAlign = "start";
+    this.data.forEach((data, index) => {
+      const col = +(index >= 5);
+      const row = index % 5;
+      this.ctx.fillText(`${(index+1).toString().padEnd(2," ")}- ${data.name.padEnd(10, " ")}${data.score}`, 130 + 290 * col, 300 + (DISPLAY_FONT_SIZE + 10) * row);
+    });
+
+    this.ctx.font = BOARD_FONT;
+    this.cursorMatrix = new Array(26).fill(" ".repeat(25));
+    draw.placeBlocks([this.cursor], this.cursorMatrix);
+    draw.drawLayers(this.ctx, [this.cursorMatrix], this.fillStyle, this.shadowColor);
   }
 }
 
@@ -474,13 +627,13 @@ export class CreditsScreen extends BackgroundScreen {
     this.ctx.font = TITLE_FONT;
     this.ctx.textAlign = "center";
     // this.ctx.fillText('TETRIS ALMOST FROM SCRATCH', this.canvas.width/2, 100);
-    this.ctx.fillText('Tetris', this.canvas.width / 2, 150);
-    this.ctx.fillText('Almost From Scratch', this.canvas.width / 2, 195);
+    this.ctx.fillText('Tetris', this.canvas.width / 2, 130);
+    this.ctx.fillText('Almost From Scratch', this.canvas.width / 2, 175);
 
     this.ctx.font = DISPLAY_FONT;
     this.ctx.fillText('BACK', this.canvas.width / 2, 510);
 
-    this.ctx.font = CREDITS_FONT;
+    this.ctx.font = SMALL_FONT;
     this.ctx.textAlign = "start";
     const text = [
       "This is an attempt of making the game tetris with modern",
@@ -488,10 +641,10 @@ export class CreditsScreen extends BackgroundScreen {
       "the project in it's github page:",
       "https://github.com/luxedo/asteroids-almost-from-scratch",
       "",
+      "Thanks to archive.org for the theme, n_audioman, jeckkech",
+      "and LittleRobotSoundFactory for the sounds in freesound.org",
+      "and David Whittaker for the gameover sound at zxart.ee.",
       "Thanks to the playtesters: ...",
-      "",
-      "",
-      "",
       "",
       "",
     ];
@@ -501,32 +654,13 @@ export class CreditsScreen extends BackgroundScreen {
     ];
 
     text.forEach((row, idx) => {
-      this.ctx.fillText(row, 130, 250 + idx * (CREDITS_FONT_SIZE));
+      this.ctx.fillText(row, 130, 210 + idx * (SMALL_FONT_SIZE));
     });
 
     this.ctx.textAlign = "center";
     textCopyright.forEach((row, idx) => {
-      this.ctx.fillText(row, this.canvas.width / 2, 430 + idx * (CREDITS_FONT_SIZE));
+      this.ctx.fillText(row, this.canvas.width / 2, 430 + idx * (SMALL_FONT_SIZE));
     });
     this.ctx.textAlign = "start";
   }
 }
-
-const makeBg = () => {
-  let bgBlocks = [];
-  for (let i = 0; i < 30; i += 5) {
-    for (let j = 0; j < 25; j += 5) {
-      bgBlocks.push(new draw.Block(draw.randomBlockType(), i, j, 0, Math.floor(Math.random() * 4)));
-    }
-  }
-  return bgBlocks;
-};
-
-const randomizeBlocks = (blocks, chanceRot, chanceChange) => {
-  blocks.forEach(block => {
-    const type = Math.random() < chanceChange ? draw.randomBlockType() : block.type;
-    block.type = type;
-    const rot = Math.random() < chanceRot ? 1 : 0;
-    block.rotate(rot);
-  });
-};

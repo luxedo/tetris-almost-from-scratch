@@ -27,8 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link id="favicon" rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
-  <link rel="manifest" href="/assets/manifest.json">
-
 
   <!-- twitter -->
   <meta name="twitter:card" content="summary_large_image">
@@ -51,32 +49,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <meta itemprop="description" content="This is an attempt of reproducing the game tetris using modern programming languages.">
   <meta itemprop="image" content="https://github.com/luxedo/tetris-almost-from-scratch/raw/master/public/assets/images/opengraph.png" />
 
-  <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyBHRsJpLEthtP3RWECxKfoYhk9bTqQVZDI",
-      authDomain: "tetris-almost-from-scratch.firebaseapp.com",
-      databaseURL: "https://tetris-almost-from-scratch.firebaseio.com",
-      projectId: "tetris-almost-from-scratch",
-      storageBucket: "tetris-almost-from-scratch.appspot.com",
-      messagingSenderId: "545952871489"
-    };
-    firebase.initializeApp(config);
-  </script>
-
   <!-- update the version number as needed -->
   <script defer src="/__/firebase/5.7.2/firebase-app.js"></script>
   <!-- include only the Firebase features as you need -->
   <script defer src="/__/firebase/5.7.2/firebase-auth.js"></script>
-  <script defer src="/__/firebase/5.7.2/firebase-database.js"></script>
-  <script defer src="/__/firebase/5.7.2/firebase-messaging.js"></script>
-  <script defer src="/__/firebase/5.7.2/firebase-storage.js"></script>
+  <script defer src="/__/firebase/5.7.2/firebase-firestore.js"></script>
   <!-- initialize the SDK after all desired features are loaded -->
   <script defer src="/__/firebase/init.js"></script>
 
   <link rel="stylesheet" href="assets/css/style.css">
-  <script src="assets/js/script.mjs" type="module"></script>
+  <script src="assets/js/script.js" type="module"></script>
 </head>
 
 <body>
@@ -102,28 +84,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </p>
     </div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-      // // The Firebase SDK is initialized and available here!
-      //
-      // firebase.auth().onAuthStateChanged(user => { });
-      // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-      // firebase.messaging().requestPermission().then(() => { });
-      // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-      //
-      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-      try {
-        let app = firebase.app();
-        let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-      } catch (e) {
-        console.error(e);
-      }
-      startGame();
-    });
-  </script>
 </body>
 
 </html>

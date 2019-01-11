@@ -1,14 +1,15 @@
 # TETRIS ALMOST FROM SCRATCH
-This is an attempt of making the game [Tetris](https://en.wikipedia.org/wiki/Tetris) using modern programming languages. The idea is to time the development and track the progress and the time it took to get in each stage in this document. If possible I want to finish this project in under 12 h.
+This is an attempt of making the game [Tetris](https://en.wikipedia.org/wiki/Tetris) using modern programming languages. The idea is to time the development and track the progress and the time it took to get in each stage in this document. If possible I want to finish this project in under 24 h.
 
 Tetris is the first software to be exported from the USSR to the US and became and not only became one of the most famous computer games, it has been released for nearly every videogame console and computer operating system.
 
-For this project, I'll be using the engine built for the [tetris-almost-from-scratch](https://github.com/luxedo/tetris-almost-from-scratch). I'll try to improve it and try to draw only characters on screen. The idea is to simulate the original game and also show an improved view using the same engine.
+For this project, I'll be using the engine built for the [asteroids-almost-from-scratch](https://github.com/luxedo/asteroids-almost-from-scratch). I'll try to improve it and try to draw only characters on screen. The idea is to simulate the original game and also show an improved view using the same engine.
+
 ![original tetris](https://upload.wikimedia.org/wikipedia/en/7/7c/Tetris-VeryFirstVersion.png)
 
 The game is based in html5/canvas, CSS and ES6 javascript.
 
-#### Check it out [here](https://luxedo.github.io/tetris-almost-from-scratch/)
+#### Check it out [here](https://tetris-almost-from-scratch.firebaseapp.com/)
 
 ## Goals
 *   ~~Add `LICENSE.md` and `README.md`~~
@@ -28,8 +29,7 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Create "next piece" display~~
 *   ~~Create Menu screen and Credits screen~~
 *   ~~Create high-scores~~
-*   Add sounds
-*   Improve webpage
+*   ~~Add sounds~~
 *   Fix playtesters requests
 *   Finished!
 
@@ -160,9 +160,11 @@ were above that line.
 ## 13:00 - Create levels/scoring
 The scoring system I used was the [Original Nintendo Scoring System](http://tetris.wikia.com/wiki/Scoring). In summary it is a table of a base according to the number of broken lines times the current level+1.
 
-For the levels, I chose to increase it for every 10 broken lines, as in the NES version.
+For the levels, I chose to increase it for every 10 broken lines, as in the NES
+version.
 
-To show the socores (`СЧЕТ`) and the level (`УРОВЕНЬ`) I decided to use the original words in russian.
+To show the socores (`СЧЕТ`) and the level (`УРОВЕНЬ`) I decided to use the
+original words in russian.
 
 ![score](/report-assets/score.gif)
 
@@ -187,5 +189,52 @@ the background and border for those screens to inherit.
 
 ![Menu and Credits](/report-assets/menu_credits.gif)
 
-## 19:00 - Create high-scores
-I implemented the High Scores for the [Asteroids](https://luxedo.github.io/asteroids-almost-from-scratch/) project, so I just had to copy that and do some refactoring.
+## 22:30 - Create high-scores
+I implemented the `High Scores` for the [Asteroids](https://luxedo.github.io/asteroids-almost-from-scratch/) game and deployed on [Heroku](https://www.heroku.com/).
+I'ts quite easy to work with them but unfortunately I'm out of [dynos](https://www.heroku.com/dynos).
+Because of that I had to look for another host.
+
+I chose to host at [Firebase](https://firebase.google.com) because their free tier
+is quite nice. This game is not built for mobile but I intend to port it in the
+future. It was also a chance to learn how to use the `Firebases`'s services and I
+really enjoyed the experience. It took around 5 hours of studying and messing around
+and 30 minutes of coding to make the `High Scores` work.
+
+In the end, `Firebase` takes care of a lot of complexity when setting up a
+database which is very nice. In the end, I just had to use their javascript
+client to read and write in the database and hopefully the security part is
+handled by them. I still don't understand how [Progressive Web Apps](https://developers.google.com/web/progressive-web-apps/)
+are meant to be built, but I know that this app is working.
+
+![High Score](/report-assets/high_score.png)
+
+Because of the Firebase studies, I'm going to extend the project's deadline to
+26 hours.
+
+## 26:00 - Add sounds
+Phew this took more time than I imagined. I just blew my newest deadline.
+
+I had code from the previous games to play sounds, but I decided to
+investigate whats new. I found out that the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+is much better than the old `<audio>` tags that I used to use. I had
+to learn how to use it, but it feels much better than the old method
+that included a couple of `setTimeout`s.
+
+I'm not sure if the original tetris had sounds or music. For nostalgia
+sake, I included the game theme in the `Menu Screen`. I also added some
+generic blip noises for other commands.
+
+I made a class to hide the complexity of dealing with sounds:
+
+![Sound](/report-assets/sound_class.png)
+
+Then I just have to call the sounds whenever they're needed:
+
+![Calling Sound](/report-assets/calling_sound.png)
+
+
+Thanks to [archive.org](https://archive.org) for the theme, `n_audioman`,
+`LittleRobotSoundFactory` and `jeckkech` for the other sounds in [freesound.org](https://freesound.org)
+and `David Whittaker` for the gameover sound at zxart.ee.",
+
+Now, I'm releasing the game for the playtesters.

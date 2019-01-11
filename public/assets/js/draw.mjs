@@ -78,7 +78,7 @@ export function placeBlocks(blocks, layer) {
 }
 
 export class Block {
-  constructor(type, margin, row, col, rot) {
+  constructor(type, margin, row, col, rot, color) {
     this.type = type;
     this.margin = margin;
     this.row = row;

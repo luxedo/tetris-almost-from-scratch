@@ -20,7 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as gl from './gameloop.mjs';
 const VERSION = "v1.0";
 
-window.startGame = () => {
-  const game = new gl.Game();
-  game.start();
-};
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    firebase.auth().signInAnonymously();
+    const app = firebase.app();
+    const firestore = firebase.firestore();
+    const settings = {timestampsInSnapshots: true};
+    firestore.settings(settings);
+    const game = new gl.Game(firestore);
+    game.start();
+  } catch (e) {
+    console.error(e);
+  }
+});
