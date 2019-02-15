@@ -35,7 +35,7 @@ export function drawLayers(ctx, layers, fillStyle, shadowColor) {
   ctx.shadowColor = shadowColor;
   layers.map(layer => {
     layer.map((row, idx) => {
-      ctx.fillText(row, 20, idx * 22 + 45);
+      ctx.fillText(row, 20, idx * 24 + 40);
     });
   });
 }

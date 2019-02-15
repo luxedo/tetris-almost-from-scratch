@@ -32,9 +32,12 @@ class Key {
       hardDrop: " ",
       sLeft: "z",
       sRight: "x",
+      sRight2: "ArrowUp",
       confirm: "Enter",
       backspace: "Backspace",
-      spacebar: " "
+      spacebar: " ",
+      pause: "Esc",
+      pause2: "Escape"
     }, gs.alphabeth);
     for (let key in this.playerKeys) {
       this._active[this.playerKeys[key].toLowerCase()] = true;

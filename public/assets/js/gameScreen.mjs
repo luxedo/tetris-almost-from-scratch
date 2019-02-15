@@ -26,19 +26,22 @@ export const alphabeth = {
 };
 
 const FONT_FAMILY = '"Lucida Sans Typewriter", "Lucida Console", monospace';
-const BOARD_FONT_SIZE = 45;
+const BOARD_FONT_SIZE = 42.2;
+const PIECES_FONT_SIZE = 45;
 const DISPLAY_FONT_SIZE = 24;
 const TITLE_FONT_SIZE = 45;
 const SMALL_FONT_SIZE = 16;
 const SCORE_FONT_SIZE = 90;
 const BOARD_FONT = `${BOARD_FONT_SIZE}px ${FONT_FAMILY}`;
+const PIECES_FONT = `${PIECES_FONT_SIZE}px ${FONT_FAMILY}`;
 const DISPLAY_FONT = `${DISPLAY_FONT_SIZE}px ${FONT_FAMILY}`;
 const TITLE_FONT = `${TITLE_FONT_SIZE}px ${FONT_FAMILY}`;
 const SMALL_FONT = `${SMALL_FONT_SIZE}px ${FONT_FAMILY}`;
 const SCORE_FONT = `${SCORE_FONT_SIZE}px ${FONT_FAMILY}`;
-const MARGIN_LEFT = 8;
+const MARGIN_LEFT = 9;
+const MARGIN_LEFT_PIECES = 8;
 const BOARD_LENGTH = 10;
-const BOARD_HEIGHT = 24;
+const BOARD_HEIGHT = 23;
 const COLLECTION = "scores";
 
 let board = new Array(BOARD_HEIGHT).fill("<!".padStart(MARGIN_LEFT + 2, " ") + "".padStart(BOARD_LENGTH, " ") + "!>");
@@ -130,9 +133,10 @@ export class GameScreen extends BlankScreen {
     this.collided = 0;
     this.setNetxMove();
     this.currentBlocks = [];
-    this.nextPiece = new draw.Block(draw.randomBlockType(), 24, 4, 0, 0);
+    this.nextPiece = new draw.Block(draw.randomBlockType(), 30, 4, 0, 0);
     this.spawnTetrominoes();
     this.frozenBlocks = [];
+    this.pause = false;
   }
   setNetxMove() {
     this._nextMove = Date.now() + 1000 * Math.pow(0.8, this.level);
@@ -145,6 +149,12 @@ export class GameScreen extends BlankScreen {
     return false;
   }
   update() {
+    if (this.keys.isActive("pause") || this.keys.isActive("pause2")) {
+      this.pause = !this.pause;
+    }
+    if (this.pause) {
+      return;
+    }
     // Move the block down
     if (this.nextMove()) {
       this.currentBlocks.map(block => block.move(1, 0));
@@ -168,7 +178,7 @@ export class GameScreen extends BlankScreen {
         this.update = () => {};
         setTimeout(() => {
           this.game.changeScreen(new GameOverScreen(this.game, this.level, this.score));
-        }, 2000);
+        }, 1200);
       }
     }
 
@@ -184,9 +194,11 @@ export class GameScreen extends BlankScreen {
     let fBlocks = board.slice(0, board.length).map(row => row.replace(/./g, " "));
     draw.placeBlocks(this.currentBlocks, cBlocks);
     draw.placeBlocks(this.frozenBlocks, fBlocks);
-    let layers = [cBlocks, fBlocks, board];
-    this.ctx.font = BOARD_FONT;
+    let layers = [cBlocks, fBlocks];
+    this.ctx.font = PIECES_FONT;
     draw.drawLayers(this.ctx, layers, this.fillStyle, this.shadowColor);
+    this.ctx.font = BOARD_FONT;
+    draw.drawLayers(this.ctx, [board], this.fillStyle, this.shadowColor);
 
     // Draw Next Piece
     let nextPieceMatrix = new Array(25).fill(" ".repeat(25));
@@ -206,6 +218,12 @@ export class GameScreen extends BlankScreen {
     display.forEach((row, idx) => {
       this.ctx.fillText(row, 20, idx * 30 + 45);
     });
+
+    if (this.pause) {
+      this.ctx.font = SCORE_FONT;
+      this.ctx.fillText("ПАУЗА", 290, 280);
+      this.ctx.fillText("=====", 290, 330);
+    }
   }
   checkUserInput() {
     if (this.keys.isActive("left") || this.keys.isHolding("left", this.keyInterval)) {
@@ -230,7 +248,7 @@ export class GameScreen extends BlankScreen {
       this.currentBlocks.map(block => block.rotate(1));
       this.checkCollisions("sLeft");
     }
-    if (this.keys.isActive("sRight")) {
+    if (this.keys.isActive("sRight") || this.keys.isActive("sRight2")) {
       this.game.sounds.play("blip");
       this.currentBlocks.map(block => block.rotate(-1));
       this.checkCollisions("sRight");
@@ -285,7 +303,7 @@ export class GameScreen extends BlankScreen {
     freeze.sort().reverse().forEach(index => {
       const block = this.currentBlocks.splice(index, 1)[0];
       this.frozenBlocks.push(...block.coordinates
-        .map(coords => new draw.Block(".", MARGIN_LEFT - 1, coords[0], coords[1], 0)));
+        .map(coords => new draw.Block(".", MARGIN_LEFT_PIECES - 1, coords[0], coords[1], 0)));
     });
 
     return freeze.length > 0;
@@ -295,8 +313,8 @@ export class GameScreen extends BlankScreen {
     let col = 6;
     if (this.nextPiece.type === "o") col++;
     if (this.nextPiece.type === "j" || this.nextPiece.type === "l") row--;
-    this.currentBlocks.push(new draw.Block(this.nextPiece.type, MARGIN_LEFT - 1, row, col, 0));
-    this.nextPiece = new draw.Block(draw.randomBlockType(), 24, 4, 0, 0);
+    this.currentBlocks.push(new draw.Block(this.nextPiece.type, MARGIN_LEFT_PIECES - 1, row, col, 0));
+    this.nextPiece = new draw.Block(draw.randomBlockType(), 30, 4, 0, 0);
     if (this.nextPiece.type == "i") this.nextPiece.move(0, -1);
     if (["j", "l", "i"].includes(this.nextPiece.type)) this.nextPiece.move(-1, 0);
   }
@@ -339,7 +357,6 @@ export class GameScreen extends BlankScreen {
       });
   }
   checkGameOver() {
-    // console.log(this.frozenBlocks.map(block => block.topmost));
     return Math.min(...this.frozenBlocks.map(block => block.topmost)) <= 0;
   }
 }
@@ -360,10 +377,10 @@ export class GameOverScreen extends BackgroundScreen {
     }, 500);
     this.position = 0;
     this.cursorPositions = [
-      [15 - this.cursor.bottommost, 5 - this.cursor.rightmost], // SUBMIT
-      [17 - this.cursor.bottommost, 4 - this.cursor.rightmost], // PLAY AGAIN
-      [19 - this.cursor.bottommost, 3 - this.cursor.rightmost], // MENU
-      [21 - this.cursor.bottommost, 5 - this.cursor.rightmost], // HIGH SCORES
+      [15 - this.cursor.bottommost, 6 - this.cursor.rightmost], // SUBMIT
+      [17 - this.cursor.bottommost, 5 - this.cursor.rightmost], // PLAY AGAIN
+      [19 - this.cursor.bottommost, 4 - this.cursor.rightmost], // MENU
+      [21 - this.cursor.bottommost, 6 - this.cursor.rightmost], // HIGH SCORES
     ];
     this.keyInterval = 200;
     this.update();
@@ -439,14 +456,14 @@ export class GameOverScreen extends BackgroundScreen {
     this.ctx.fillText(`${this.score}`, this.canvas.width / 2, 240);
     this.ctx.font = DISPLAY_FONT;
     if (!this.sent) {
-      this.ctx.fillText('SUBMIT', this.canvas.width / 2, 350);
+      this.ctx.fillText('SUBMIT', this.canvas.width / 2, 380);
       if (this.blinkTypingCursor) {
         this.ctx.fillText('_', 350+this.name.length*(DISPLAY_FONT_SIZE-9.5), 280);
       }
     }
-    this.ctx.fillText('PLAY AGAIN', this.canvas.width / 2, 395);
-    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 440);
-    this.ctx.fillText('MENU', this.canvas.width / 2, 485);
+    this.ctx.fillText('PLAY AGAIN', this.canvas.width / 2, 427);
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 475);
+    this.ctx.fillText('MENU', this.canvas.width / 2, 522);
     this.ctx.textAlign = "start";
     this.ctx.fillText(`NAME: ${this.name}`, 250, 280);
 
@@ -478,10 +495,10 @@ export class MenuScreen extends BackgroundScreen {
     this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
     this.position = 0;
     this.cursorPositions = [
-      [12 - this.cursor.bottommost, 5 - this.cursor.rightmost], // PLAY
-      [14 - this.cursor.bottommost, 3 - this.cursor.rightmost], // HIGH SCORES
-      [16 - this.cursor.bottommost, 5 - this.cursor.rightmost], // MUTE
-      [18 - this.cursor.bottommost, 4 - this.cursor.rightmost], // CREDITS
+      [12 - this.cursor.bottommost, 6 - this.cursor.rightmost], // PLAY
+      [14 - this.cursor.bottommost, 4 - this.cursor.rightmost], // HIGH SCORES
+      [16 - this.cursor.bottommost, 6 - this.cursor.rightmost], // MUTE
+      [18 - this.cursor.bottommost, 5 - this.cursor.rightmost], // CREDITS
     ];
     this.keyInterval = 200;
     this.update();
@@ -534,16 +551,17 @@ export class MenuScreen extends BackgroundScreen {
     this.ctx.fillText('Tetris', this.canvas.width / 2, 150);
     this.ctx.fillText('Almost From Scratch', this.canvas.width / 2, 195);
     this.ctx.font = DISPLAY_FONT;
-    this.ctx.fillText('PLAY', this.canvas.width / 2, 290);
-    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 335);
-    this.ctx.fillText('MUTE', this.canvas.width / 2, 380);
-    this.ctx.fillText('CREDITS', this.canvas.width / 2, 425);
-    this.ctx.fillText('Controls', this.canvas.width / 4, 430);
+    this.ctx.fillText('PLAY', this.canvas.width / 2, 300);
+    this.ctx.fillText('HIGH SCORES', this.canvas.width / 2, 347);
+    this.ctx.fillText('MUTE', this.canvas.width / 2, 395);
+    this.ctx.fillText('CREDITS', this.canvas.width / 2, 442);
+    this.ctx.fillText('Controls', this.canvas.width / 4, 410);
     this.ctx.font = SMALL_FONT;
-    this.ctx.fillText('Arrows: Move', this.canvas.width / 4 , 450);
-    this.ctx.fillText('Z, X: Rotate', this.canvas.width / 4 , 470);
-    this.ctx.fillText('Spacebar: Hard Drop', this.canvas.width / 4, 490);
-    this.ctx.fillText('v0.0-beta', this.canvas.width / 4 * 3, 460);
+    this.ctx.fillText('L/R Arrows: Move', this.canvas.width / 4 , 430);
+    this.ctx.fillText('Z, X, Up Arrow: Rotate', this.canvas.width / 4 , 450);
+    this.ctx.fillText('Spacebar: Hard Drop', this.canvas.width / 4, 470);
+    this.ctx.fillText('Esc: Pause', this.canvas.width / 4, 490);
+    this.ctx.fillText('v1.0', this.canvas.width / 4 * 3, 460);
     this.ctx.textAlign = "start";
   }
 }
@@ -553,8 +571,8 @@ export class HighScoresScreen extends BackgroundScreen {
     super.init();
 
     this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
-    this.cursor.row = 23 - this.cursor.bottommost;
-    this.cursor.col = 5 - this.cursor.rightmost;
+    this.cursor.row = 21 - this.cursor.bottommost;
+    this.cursor.col = 6 - this.cursor.rightmost;
 
     this.data = [];
     this.game.firestore.collection(COLLECTION).orderBy("score", "desc")
@@ -603,8 +621,8 @@ export class CreditsScreen extends BackgroundScreen {
   init() {
     super.init();
     this.cursor = new draw.Block(draw.randomBlockType(), 7, 0, 0, Math.floor(Math.random() * 4));
-    this.cursor.row = 23 - this.cursor.bottommost;
-    this.cursor.col = 5 - this.cursor.rightmost;
+    this.cursor.row = 21 - this.cursor.bottommost;
+    this.cursor.col = 6 - this.cursor.rightmost;
   }
   update() {
     super.update();
@@ -644,7 +662,8 @@ export class CreditsScreen extends BackgroundScreen {
       "Thanks to archive.org for the theme, n_audioman, jeckkech",
       "and LittleRobotSoundFactory for the sounds in freesound.org",
       "and David Whittaker for the gameover sound at zxart.ee.",
-      "Thanks to the playtesters: ...",
+      "Thanks to the playtesters: Ulisses Sato, Pedro Kersten",
+      "and Sofia 'faifos' Faria.",
       "",
       "",
     ];

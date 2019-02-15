@@ -238,3 +238,13 @@ Thanks to [archive.org](https://archive.org) for the theme, `n_audioman`,
 and `David Whittaker` for the gameover sound at zxart.ee.",
 
 Now, I'm releasing the game for the playtesters.
+
+## 27:15 - Fix playtesters requests
+I deployed the game and got the following feedback
+
+-   ~~Confusing gap between pieces and side walls (Ule)~~
+-   ~~Rotate piece with `ArrowUp` (Ule)~~
+-   ~~Pause game with ESC (Ule)~~
+-   ~~Tetrominoes have rectangular blocks (Me)~~
+-   Game has frozen (Kaska)
+-   ~~Menu cursor is out of place (Sofia)~~
