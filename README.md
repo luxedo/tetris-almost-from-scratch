@@ -30,8 +30,8 @@ The game is based in html5/canvas, CSS and ES6 javascript.
 *   ~~Create Menu screen and Credits screen~~
 *   ~~Create high-scores~~
 *   ~~Add sounds~~
-*   Fix playtesters requests
-*   Finished!
+*   ~~Fix playtesters requests~~
+*   ~~Finished!~~
 
 ## Progress reports
 00:00 - START! Well, now it's 6th of June 2017 and I'm a little drunk already.
@@ -248,3 +248,21 @@ I deployed the game and got the following feedback
 -   ~~Tetrominoes have rectangular blocks (Me)~~
 -   Game has frozen (Kaska)
 -   ~~Menu cursor is out of place (Sofia)~~
+
+## 27:20 - Finished
+So I have finished this version of the game, unfortunately I blew the schedule
+but only by a small portion, also I could not reproduce a bug that happened to
+`Pedro`, whenever I have more information about it I'll fix it.
+
+Thanks to the playtesters Ulisses Sato, Pedro Kersten, [Sofia "faifos" Faria](https://github.com/faifos).
+
+Next up! Minesweeper? 🤔
+
+
+## License
+
+> This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+>
+> This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+>
+> You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
