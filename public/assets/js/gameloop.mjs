@@ -2,7 +2,7 @@
 tetris-almost-from-scratch
 This is an attempt of making the game tetris using modern programming languages
 
-Copyright (C) 2017  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
+Copyright (C) 2019  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

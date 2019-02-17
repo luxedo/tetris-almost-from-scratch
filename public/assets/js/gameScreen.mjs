@@ -2,7 +2,7 @@
 tetris-almost-from-scratch
 This is an attempt of making the game tetris using modern programming languages
 
-Copyright (C) 2017  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
+Copyright (C) 2019  Luiz Eduardo Amaral - <luizamaral306@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -654,17 +654,18 @@ export class CreditsScreen extends BackgroundScreen {
     this.ctx.font = SMALL_FONT;
     this.ctx.textAlign = "start";
     const text = [
-      "This is an attempt of making the game tetris with modern",
-      "programming languages. You can find more information about",
-      "the project in it's github page:",
+      "  This is an attempt of making the game tetris with",
+      "modern programming languages. You can find more",
+      "information about the project in it's github page:",
       "https://github.com/luxedo/asteroids-almost-from-scratch",
       "",
-      "Thanks to archive.org for the theme, n_audioman, jeckkech",
-      "and LittleRobotSoundFactory for the sounds in freesound.org",
-      "and David Whittaker for the gameover sound at zxart.ee.",
-      "Thanks to the playtesters: Ulisses Sato, Pedro Kersten",
-      "and Sofia 'faifos' Faria.",
+      "  Thanks to archive.org for the theme, n_audioman,",
+      "jeckkech and LittleRobotSoundFactory for the sounds in",
+      "freesound.org and David Whittaker for the gameover",
+      "sound at zxart.ee.",
       "",
+      "  Thanks to the playtesters: Ulisses Sato, Pedro Kersten",
+      "and Sofia 'faifos' Faria.",
       "",
     ];
     const textCopyright = ["This project is under a GNU GPL3 license. Have fun!",
