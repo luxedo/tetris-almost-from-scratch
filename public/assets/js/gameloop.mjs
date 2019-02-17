@@ -197,7 +197,8 @@ export class Game {
     this.ctx = this.canvas.getContext("2d"); // Get canvas context
     this.ctx.shadowOffsetX = 0;
     this.ctx.shadowOffsetY = 0;
-    this.ctx.shadowBlur = 30;
+    const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+    this.ctx.shadowBlur = isChrome?30:0;
   }
   start() {
     let screen = new gs.MenuScreen(this);

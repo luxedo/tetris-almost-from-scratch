@@ -29,12 +29,14 @@ const FONT_FAMILY = '"Lucida Sans Typewriter", "Lucida Console", monospace';
 const BOARD_FONT_SIZE = 42.2;
 const PIECES_FONT_SIZE = 45;
 const DISPLAY_FONT_SIZE = 24;
+const HSCORES_FONT_SIZE = 20;
 const TITLE_FONT_SIZE = 45;
 const SMALL_FONT_SIZE = 16;
 const SCORE_FONT_SIZE = 90;
 const BOARD_FONT = `${BOARD_FONT_SIZE}px ${FONT_FAMILY}`;
 const PIECES_FONT = `${PIECES_FONT_SIZE}px ${FONT_FAMILY}`;
 const DISPLAY_FONT = `${DISPLAY_FONT_SIZE}px ${FONT_FAMILY}`;
+const HSCORES_FONT = `${HSCORES_FONT_SIZE}px ${FONT_FAMILY}`;
 const TITLE_FONT = `${TITLE_FONT_SIZE}px ${FONT_FAMILY}`;
 const SMALL_FONT = `${SMALL_FONT_SIZE}px ${FONT_FAMILY}`;
 const SCORE_FONT = `${SCORE_FONT_SIZE}px ${FONT_FAMILY}`;
@@ -70,12 +72,12 @@ export class BackgroundScreen extends BlankScreen {
     this.shadowColorBg = "#020";
 
     this.borderBlocks = [];
-    for (let i = 0; i < 30; i += 5) {
+    for (let i = 1; i < 30; i += 5) {
       this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 0, 0, Math.floor(Math.random() * 4)));
-      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 22, 0, Math.floor(Math.random() * 4)));
+      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), i, 20, 0, Math.floor(Math.random() * 4)));
     }
-    for (let i = 5; i < 20; i += 6) {
-      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 0, i, 0, Math.floor(Math.random() * 4)));
+    for (let i = 5; i < 20; i += 5) {
+      this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 1, i, 0, Math.floor(Math.random() * 4)));
       this.borderBlocks.push(new draw.Block(draw.randomBlockType(), 25, i, 0, Math.floor(Math.random() * 4)));
     }
     this.bgBlocks = this.makeBg();
@@ -101,7 +103,7 @@ export class BackgroundScreen extends BlankScreen {
   }
   makeBg() {
     let bgBlocks = [];
-    for (let i = 0; i < 30; i += 5) {
+    for (let i = 1; i < 31; i += 5) {
       for (let j = 0; j < 25; j += 5) {
         bgBlocks.push(new draw.Block(draw.randomBlockType(), i, j, 0, Math.floor(Math.random() * 4)));
       }
@@ -603,6 +605,8 @@ export class HighScoresScreen extends BackgroundScreen {
 
     this.ctx.font = DISPLAY_FONT;
     this.ctx.fillText('BACK', this.canvas.width / 2, 510);
+
+    this.ctx.font = HSCORES_FONT;
     this.ctx.textAlign = "start";
     this.data.forEach((data, index) => {
       const col = +(index >= 5);

@@ -248,6 +248,7 @@ I deployed the game and got the following feedback
 -   ~~Tetrominoes have rectangular blocks (Me)~~
 -   Game has frozen (Kaska)
 -   ~~Menu cursor is out of place (Sofia)~~
+-   ~~Improve High Scores sreen font size (Me)~~
 
 ## 27:20 - Finished
 So I have finished this version of the game, unfortunately I blew the schedule

@@ -33,8 +33,8 @@ export const blockTypes = {
 export function drawLayers(ctx, layers, fillStyle, shadowColor) {
   ctx.fillStyle = fillStyle;
   ctx.shadowColor = shadowColor;
-  layers.map(layer => {
-    layer.map((row, idx) => {
+  layers.forEach(layer => {
+    layer.forEach((row, idx) => {
       ctx.fillText(row, 20, idx * 24 + 40);
     });
   });
